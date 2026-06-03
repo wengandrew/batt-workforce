@@ -46,8 +46,9 @@
     updateMetrics();
   }).catch(err => {
     console.error('Failed to load data:', err);
-    document.getElementById('chart-labor-intensity').innerHTML =
-      '<div class="placeholder">Error loading data. Run from a web server (python -m http.server).</div>';
+    const msg = '<div class="placeholder">Error loading data. Run from a web server (python -m http.server).</div>';
+    document.getElementById('chart-labor-intensity').innerHTML = msg;
+    document.getElementById('chart-global-jobs').innerHTML = msg;
   });
 
   // ── View A: Labor Intensity Chart ──
@@ -152,9 +153,8 @@
     }
 
     // Facility lines and points
-    const tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0);
+    const tooltip = d3.select('body').selectAll('.tooltip-labor').data([0])
+      .join('div').attr('class', 'tooltip tooltip-labor').style('opacity', 0);
 
     laborData.facilities.forEach(facility => {
       const data = facility.data.filter(d => d.years_since_start != null);
@@ -278,18 +278,27 @@
 
     // Build projection data
     const demand = jobsData.global_gwh_demand.map((d, i) => {
-      const scaleGwh = d.year <= 2035
-        ? d.gwh * (gwh2035Override / 4500)
-        : d.gwh * (gwh2035Override / 4500);
+      const scaleGwh = d.gwh * (gwh2035Override / 4500);
 
       const yearOffset = d.year - 2024;
       const wpg = baseWpg * Math.pow(1 - effAutoRate, yearOffset);
 
       const shares = scenarioData.market_shares || jobsData.scenarios.baseline.market_shares;
+
+      // Get base shares, then normalize so they sum to 1.0 after applying US override
+      const baseShares = {};
+      let nonUsTotal = 0;
+      ['US', 'EU', 'China', 'Rest of World'].forEach(region => {
+        baseShares[region] = shares[region] ? shares[region][i] || shares[region][shares[region].length - 1] : 0.25;
+        if (region !== 'US') nonUsTotal += baseShares[region];
+      });
+
+      const remaining = 1.0 - usShareOverride;
+      const scaleFactor = nonUsTotal > 0 ? remaining / nonUsTotal : 0;
+
       const regions = {};
       ['US', 'EU', 'China', 'Rest of World'].forEach(region => {
-        let share = shares[region] ? shares[region][i] || shares[region][shares[region].length - 1] : 0.25;
-        if (region === 'US') share = usShareOverride;
+        const share = region === 'US' ? usShareOverride : baseShares[region] * scaleFactor;
         regions[region] = Math.round(scaleGwh * wpg * multiplier * share / 1000);
       });
 
