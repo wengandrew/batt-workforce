@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "title": "Projected Global Battery Manufacturing Workforce",
+    "x_axis": "Year",
+    "y_axis": "Cumulative Workers (thousands)",
+    "last_updated": "2026-06-03",
+    "note": "Placeholder projections — will be refined with primary source data"
+  },
+  "assumptions": {
+    "base_workers_per_gwh": 120,
+    "automation_reduction_per_year": 0.02,
+    "indirect_multiplier": 1.8,
+    "regions": ["US", "EU", "China", "Rest of World"]
+  },
+  "global_gwh_demand": [
+    {"year": 2024, "gwh": 1000},
+    {"year": 2025, "gwh": 1200},
+    {"year": 2026, "gwh": 1450},
+    {"year": 2027, "gwh": 1700},
+    {"year": 2028, "gwh": 2000},
+    {"year": 2029, "gwh": 2250},
+    {"year": 2030, "gwh": 2500},
+    {"year": 2032, "gwh": 3200},
+    {"year": 2035, "gwh": 4500},
+    {"year": 2040, "gwh": 7000},
+    {"year": 2045, "gwh": 9500},
+    {"year": 2050, "gwh": 12000}
+  ],
+  "scenarios": {
+    "baseline": {
+      "label": "Baseline",
+      "market_shares": {
+        "US": [0.07, 0.08, 0.09, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
+        "EU": [0.08, 0.09, 0.10, 0.10, 0.11, 0.11, 0.12, 0.12, 0.12, 0.13, 0.13, 0.13],
+        "China": [0.77, 0.75, 0.73, 0.72, 0.70, 0.69, 0.65, 0.63, 0.60, 0.58, 0.56, 0.55],
+        "Rest of World": [0.08, 0.08, 0.08, 0.08, 0.09, 0.10, 0.13, 0.15, 0.18, 0.19, 0.21, 0.22]
+      }
+    },
+    "us_high": {
+      "label": "US High Growth (IRA continues)",
+      "market_shares": {
+        "US": [0.07, 0.09, 0.11, 0.13, 0.14, 0.14, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
+        "EU": [0.08, 0.09, 0.10, 0.10, 0.11, 0.11, 0.12, 0.12, 0.12, 0.13, 0.13, 0.13],
+        "China": [0.77, 0.74, 0.71, 0.68, 0.65, 0.63, 0.60, 0.58, 0.55, 0.52, 0.50, 0.48],
+        "Rest of World": [0.08, 0.08, 0.08, 0.09, 0.10, 0.12, 0.13, 0.15, 0.18, 0.20, 0.22, 0.24]
+      }
+    },
+    "high_automation": {
+      "label": "High Automation",
+      "automation_reduction_per_year": 0.04,
+      "note": "Doubled automation rate reduces workforce needs faster"
+    }
+  }
+}

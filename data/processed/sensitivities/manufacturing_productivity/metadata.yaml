@@ -1,0 +1,36 @@
+sensitivity: manufacturing_productivity
+description: "Labor intensity benchmarks tracking workers per GWh over factory lifetime"
+units:
+  workers_per_gwh: "workers / GWh annual production capacity"
+  workforce_total: "headcount"
+  production_gwh: "GWh deployed annually"
+  years_since_start: "years since factory initial production"
+
+datasets:
+  - file: labor_intensity_benchmarks.csv
+    description: "Compiled labor intensity data from publicly available sources"
+    sources:
+      - committee_insights_paper
+    assumptions:
+      - "Production capacity = realized or deployed capacity, not announced/planned capacity"
+      - "Workers include direct manufacturing employees only (not indirect/induced)"
+      - "CATL global figures aggregate all CATL facilities worldwide"
+      - "Some intermediate years for LGES Poland are interpolated from endpoint data"
+
+mathematical_model:
+  type: "exponential_decay"
+  equation: "workers_per_gwh = A * exp(-k * t) + C"
+  parameters:
+    A:
+      description: "Initial excess labor intensity during ramp-up"
+      unit: "workers/GWh"
+      estimated_range: [200, 500]
+    k:
+      description: "Learning/automation rate constant"
+      unit: "1/year"
+      estimated_range: [0.3, 0.8]
+    C:
+      description: "Asymptotic steady-state labor intensity"
+      unit: "workers/GWh"
+      estimated_range: [60, 150]
+  notes: "Fit will improve as more primary source data is added"

@@ -1,0 +1,38 @@
+sensitivity: market_share
+description: "Regional distribution of global battery manufacturing capacity"
+status: placeholder
+
+parameters:
+  regions:
+    - name: China
+      current_share_2024: 0.77
+      scenario_low_2035: 0.60
+      scenario_base_2035: 0.65
+      scenario_high_2035: 0.70
+    - name: EU
+      current_share_2024: 0.08
+      scenario_low_2035: 0.08
+      scenario_base_2035: 0.12
+      scenario_high_2035: 0.18
+    - name: US
+      current_share_2024: 0.07
+      scenario_low_2035: 0.05
+      scenario_base_2035: 0.10
+      scenario_high_2035: 0.15
+    - name: Rest of World
+      current_share_2024: 0.08
+      scenario_low_2035: 0.07
+      scenario_base_2035: 0.13
+      scenario_high_2035: 0.17
+
+  global_gwh_demand:
+    description: "Total global battery demand in GWh"
+    baseline_2024: 1000
+    projected_2030: 2500
+    projected_2035: 4500
+    projected_2040: 7000
+    projected_2050: 12000
+    notes: "Placeholder projections; refine with BNEF and IEA data"
+
+datasets: []
+notes: "Critical for View B of the dashboard. Awaiting BNEF EV Outlook and other demand forecasts."
