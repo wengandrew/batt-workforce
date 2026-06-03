@@ -1,0 +1,14 @@
+facility,region,year,workers_per_gwh,workforce_total,production_gwh,years_since_start,phase,source
+CATL (Global),China,2019,180,40000,222,8,ramp_up,committee_insights_paper
+CATL (Global),China,2020,160,50000,313,9,scaling,committee_insights_paper
+CATL (Global),China,2021,148,61000,412,10,scaling,committee_insights_paper
+CATL (Global),China,2022,145,80000,552,11,scaling,committee_insights_paper
+CATL (Global),China,2023,144,90000,625,12,maturing,committee_insights_paper
+CATL (Global),China,2024,143,97000,676,13,steady_state,committee_insights_paper
+LGES (Michigan US),US,2024,108,,,,steady_state,committee_insights_paper
+PENA (Nevada US),US,2024,137,,,,steady_state,committee_insights_paper
+LGES (Wroclaw Poland),EU,2020,464,,,,ramp_up,committee_insights_paper
+LGES (Wroclaw Poland),EU,2021,350,,,,ramp_up,committee_insights_paper
+LGES (Wroclaw Poland),EU,2022,200,,,,scaling,committee_insights_paper
+LGES (Wroclaw Poland),EU,2023,120,,,,scaling,committee_insights_paper
+LGES (Wroclaw Poland),EU,2024,81,7000,86,5,steady_state,committee_insights_paper

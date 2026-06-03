@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battery Manufacturing Workforce Outlook</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>Battery Manufacturing Workforce Outlook</h1>
+    <div class="subtitle">Volta Foundation &middot; 2026 State of Industry &middot; <span class="status-badge draft">Draft</span></div>
+  </div>
+</header>
+
+<nav>
+  <div class="container">
+    <a href="#dashboard" class="active" data-section="dashboard">Dashboard</a>
+    <a href="#report" data-section="report">Report</a>
+    <a href="#sources" data-section="sources">Data Sources</a>
+    <a href="#methodology" data-section="methodology">Methodology</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ===================== DASHBOARD SECTION ===================== -->
+  <div id="dashboard" class="section active">
+
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-value" id="metric-steady-state">~80-140</div>
+        <div class="metric-label">Workers per GWh (steady-state range)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metric-ramp-up">400+</div>
+        <div class="metric-label">Workers per GWh (peak ramp-up)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metric-global-2035">—</div>
+        <div class="metric-label">Projected global workforce 2035</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metric-global-2050">—</div>
+        <div class="metric-label">Projected global workforce 2050</div>
+      </div>
+    </div>
+
+    <!-- View A: Labor Intensity -->
+    <div class="chart-panel">
+      <h3>View A: Labor Intensity Curve</h3>
+      <p class="chart-description">Workers per GWh vs. years since factory start. Each line represents a facility. The dashed curve is the fitted exponential decay model.</p>
+      <div class="chart-container" id="chart-labor-intensity"></div>
+    </div>
+
+    <div style="height: 2rem;"></div>
+
+    <!-- View B: Global Jobs Projection -->
+    <div class="dashboard-grid">
+      <div class="chart-panel">
+        <h3>View B: Cumulative Global Battery Workforce</h3>
+        <p class="chart-description">Projected workforce through 2050 by region, subject to adjustable assumptions.</p>
+        <div class="chart-container" id="chart-global-jobs"></div>
+      </div>
+    </div>
+
+    <div style="height: 1.5rem;"></div>
+
+    <!-- Sensitivity Controls -->
+    <div class="controls-panel">
+      <h3>Sensitivity Controls</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+
+        <div class="control-group">
+          <label>Scenario</label>
+          <select id="ctrl-scenario">
+            <option value="baseline">Baseline</option>
+            <option value="us_high">US High Growth (IRA continues)</option>
+            <option value="high_automation">High Automation</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label>Base Workers per GWh (steady-state)</label>
+          <input type="range" id="ctrl-workers-per-gwh" min="60" max="200" value="120" step="5">
+          <span class="value-display" id="val-workers-per-gwh">120</span>
+        </div>
+
+        <div class="control-group">
+          <label>Automation Reduction (%/year)</label>
+          <input type="range" id="ctrl-automation" min="0" max="8" value="2" step="0.5">
+          <span class="value-display" id="val-automation">2.0%</span>
+        </div>
+
+        <div class="control-group">
+          <label>Indirect Job Multiplier</label>
+          <input type="range" id="ctrl-multiplier" min="1.0" max="3.0" value="1.8" step="0.1">
+          <span class="value-display" id="val-multiplier">1.8x</span>
+        </div>
+
+        <div class="control-group">
+          <label>US Market Share 2035 (%)</label>
+          <input type="range" id="ctrl-us-share" min="3" max="25" value="10" step="1">
+          <span class="value-display" id="val-us-share">10%</span>
+        </div>
+
+        <div class="control-group">
+          <label>Global GWh Demand 2035</label>
+          <input type="range" id="ctrl-gwh-2035" min="2000" max="8000" value="4500" step="250">
+          <span class="value-display" id="val-gwh-2035">4,500 GWh</span>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================== REPORT SECTION ===================== -->
+  <div id="report" class="section">
+
+    <div class="report-section">
+      <h2>1. Executive Summary</h2>
+      <div class="callout">
+        "The battery industry does not have a factory workforce problem &mdash; it has a full industrial workforce problem."
+      </div>
+      <p>This report presents the Volta Foundation's estimate of total workforce required per GWh of battery manufacturing capacity, encompassing direct, indirect, induced, and upstream jobs across the full value chain.</p>
+      <div class="placeholder">
+        Key findings will be populated as primary source data is processed. Current seed data suggests steady-state labor intensity ranges from 80&ndash;140 workers/GWh for direct manufacturing, with peak ramp-up intensities exceeding 400 workers/GWh.
+      </div>
+      <h3>Major Uncertainties</h3>
+      <ul>
+        <li><strong>Automation</strong> &mdash; how increased automation reduces direct labor needs</li>
+        <li><strong>Energy density improvements</strong> &mdash; higher Wh/kg means fewer cells per GWh</li>
+        <li><strong>Manufacturing productivity</strong> &mdash; learning curves and process maturity</li>
+        <li><strong>Alternative storage technologies</strong> &mdash; sodium-ion, solid-state impacts</li>
+      </ul>
+    </div>
+
+    <div class="report-section">
+      <h2>2. Why Workforce Quantification Matters</h2>
+      <p>There is a persistent mismatch between announced battery manufacturing capacity (measured in GWh) and the workforce planning required to build, staff, and sustain those facilities. This gap has consequences for:</p>
+      <ul>
+        <li>Regional competition for skilled labor</li>
+        <li>Infrastructure strain (housing, transportation) in manufacturing corridors</li>
+        <li>Policy design, where subsidies are often tied to job creation targets</li>
+        <li>Public support and political viability of industrial strategy</li>
+      </ul>
+      <h3>Key Questions This Paper Addresses</h3>
+      <ol>
+        <li>How many workers may be needed globally by 2035 and 2050?</li>
+        <li>What share could North America or the U.S. capture?</li>
+        <li>How does automation impact workforce demand?</li>
+        <li>What workforce types and skills will be required?</li>
+      </ol>
+    </div>
+
+    <div class="report-section">
+      <h2>3. Defining the Battery Manufacturing Workforce</h2>
+      <h3>Workforce Categories</h3>
+      <ul>
+        <li><strong>Direct workforce</strong> &mdash; production line operators, equipment technicians, quality control, process engineers</li>
+        <li><strong>Indirect/industrial support</strong> &mdash; maintenance, logistics, safety, management, HR</li>
+        <li><strong>Adjacent operational workforce</strong> &mdash; construction (during build-out), equipment installation, commissioning</li>
+        <li><strong>Upstream</strong> &mdash; mining, materials processing, cathode/anode manufacturing, electrolyte production</li>
+      </ul>
+      <h3>Workforce Across the Value Chain</h3>
+      <div class="placeholder">Detailed value chain workforce mapping &mdash; awaiting primary source data</div>
+      <h3>Ramp-Up vs. Steady-State Labor Needs</h3>
+      <p>Labor intensity peaks during production ramp-up, often exceeding 400 workers per GWh. As production capacity scales and process automation matures, labor intensity declines sharply. Best-in-class steady-state plants approach 80 workers per GWh.</p>
+    </div>
+
+    <div class="report-section">
+      <h2>4. Current State of Workforce Estimates</h2>
+      <h3>Existing Benchmarks</h3>
+      <table style="width:100%; border-collapse:collapse; margin:1rem 0;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border);">
+            <th style="text-align:left; padding:0.5rem;">Facility</th>
+            <th style="text-align:right; padding:0.5rem;">Workers/GWh</th>
+            <th style="text-align:left; padding:0.5rem;">Phase</th>
+            <th style="text-align:left; padding:0.5rem;">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">CATL (Global)</td>
+            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">143</td>
+            <td style="padding:0.5rem;">Steady-state</td>
+            <td style="padding:0.5rem;">Public filings</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">LGES (Michigan, US)</td>
+            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">108</td>
+            <td style="padding:0.5rem;">Steady-state</td>
+            <td style="padding:0.5rem;">Public filings</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">PENA (Nevada, US)</td>
+            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">137</td>
+            <td style="padding:0.5rem;">Steady-state</td>
+            <td style="padding:0.5rem;">Public filings</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">LGES (Wroclaw, Poland)</td>
+            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">81</td>
+            <td style="padding:0.5rem;">Steady-state</td>
+            <td style="padding:0.5rem;">Public filings</td>
+          </tr>
+          <tr>
+            <td style="padding:0.5rem;">LGES (Wroclaw, Poland)</td>
+            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">464</td>
+            <td style="padding:0.5rem;">Ramp-up</td>
+            <td style="padding:0.5rem;">Public filings</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Global Workforce Projections</h3>
+      <div class="placeholder">Scenario projections for 2035 &amp; 2050 &mdash; see Dashboard View B for interactive exploration</div>
+    </div>
+
+    <div class="report-section">
+      <h2>5. Key Insights &amp; Implications</h2>
+      <h3>Major Findings</h3>
+      <ul>
+        <li>Workforce demand likely remains substantial even with increased automation</li>
+        <li>Maintenance, quality, and technical support roles may become increasingly important as automation increases</li>
+        <li>Regional policy decisions will strongly influence workforce distribution</li>
+      </ul>
+      <h3>Risk of Bottlenecks</h3>
+      <ul>
+        <li>Skilled trades shortage</li>
+        <li>Lack of career planning and good jobs framework</li>
+        <li>Equipment installation delays</li>
+        <li>Logistics constraints</li>
+        <li>Land use and financing constraints</li>
+      </ul>
+      <div class="placeholder">Detailed policy implications &mdash; awaiting primary source analysis</div>
+    </div>
+
+    <div class="report-section">
+      <h2>6. Future Outlook</h2>
+      <div class="placeholder">Committee next steps and future research agenda &mdash; to be developed</div>
+    </div>
+
+  </div>
+
+  <!-- ===================== SOURCES SECTION ===================== -->
+  <div id="sources" class="section">
+    <h2 style="font-size:1.5rem; margin-bottom:1.5rem; color:var(--primary-dark);">Primary Data Sources</h2>
+    <p style="margin-bottom:1.5rem; color:var(--text-secondary);">Each source must be obtained and processed before its data appears in the dashboard. Status is tracked in <code>data/processed/sources.yaml</code>.</p>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border); text-align:left;">
+          <th style="padding:0.6rem;">#</th>
+          <th style="padding:0.6rem;">Source</th>
+          <th style="padding:0.6rem;">Provided</th>
+          <th style="padding:0.6rem;">Processed</th>
+          <th style="padding:0.6rem;">Notes</th>
+        </tr>
+      </thead>
+      <tbody id="sources-table">
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">1</td><td style="padding:0.5rem;">McKinsey Research</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Industry workforce benchmarks</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">2</td><td style="padding:0.5rem;">Ohio Research</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Regional workforce study</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">3</td><td style="padding:0.5rem;">C2ES Research</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Climate/energy workforce analysis</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">4</td><td style="padding:0.5rem;">EPI Report</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Economic Policy Institute labor data</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">5</td><td style="padding:0.5rem;">GBA Report (2019)</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Global Battery Alliance workforce data</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">6</td><td style="padding:0.5rem;">Argonne/Li-Bridge CAR Report</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Funded workforce study</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">7</td><td style="padding:0.5rem;">Battery Talent Census</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Talent pipeline data</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">8</td><td style="padding:0.5rem;">Battery Business Directory</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Employee counts by company</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">9</td><td style="padding:0.5rem;">Stanford Battery Summit</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Industry outlook</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">10</td><td style="padding:0.5rem;">BNEF EV Outlook</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Key demand forecast for View B</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">11</td><td style="padding:0.5rem;">EV Sales &amp; Charging Through 2035</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Demand planning baseline</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">12</td><td style="padding:0.5rem;">Battery Report 2025 - Talent</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Most recent annual data</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">13</td><td style="padding:0.5rem;">Workplace Demand Studies</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Labor market studies</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">14</td><td style="padding:0.5rem;">Economic Forecasts</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">GDP, employment trends</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:0.5rem;">15</td><td style="padding:0.5rem;">EV Labor Intensity Study (Andrew)</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Primary labor intensity research</td>
+        </tr>
+        <tr>
+          <td style="padding:0.5rem;">16</td><td style="padding:0.5rem;">Committee Insights Paper</td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag active">Yes</span></td>
+          <td style="padding:0.5rem;"><span class="sensitivity-tag active">Yes</span></td>
+          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Seed data extracted (CATL, LGES, PENA)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===================== METHODOLOGY SECTION ===================== -->
+  <div id="methodology" class="section">
+    <h2 style="font-size:1.5rem; margin-bottom:1.5rem; color:var(--primary-dark);">Methodology</h2>
+
+    <div class="report-section">
+      <h3>Labor Intensity Model (View A)</h3>
+      <p>We model the decline in labor intensity over a factory's lifetime using an exponential decay function:</p>
+      <div class="callout" style="font-family:var(--font-mono); font-size:0.95rem;">
+        workers_per_gwh(t) = A &middot; e<sup>-kt</sup> + C
+      </div>
+      <ul>
+        <li><strong>A</strong> &mdash; initial excess labor intensity during ramp-up (workers/GWh), estimated range: 200&ndash;500</li>
+        <li><strong>k</strong> &mdash; learning/automation rate constant (1/year), estimated range: 0.3&ndash;0.8</li>
+        <li><strong>C</strong> &mdash; asymptotic steady-state labor intensity (workers/GWh), estimated range: 60&ndash;150</li>
+        <li><strong>t</strong> &mdash; years since factory started production</li>
+      </ul>
+      <p>The curve is fit to aggregated data from all available primary sources using nonlinear least squares (scipy.optimize.curve_fit). As more data points are added, the fit and confidence intervals will improve.</p>
+    </div>
+
+    <div class="report-section">
+      <h3>Cumulative Jobs Model (View B)</h3>
+      <p>Total workforce at year <em>y</em> is computed as:</p>
+      <div class="callout" style="font-family:var(--font-mono); font-size:0.95rem;">
+        jobs(y) = GWh_demand(y) &times; workers_per_gwh(y) &times; indirect_multiplier &times; policy_modifier(y)
+      </div>
+      <p>Where:</p>
+      <ul>
+        <li><strong>GWh_demand(y)</strong> &mdash; total global battery demand from demand forecasts</li>
+        <li><strong>workers_per_gwh(y)</strong> &mdash; from View A curve, accounting for automation trajectory</li>
+        <li><strong>indirect_multiplier</strong> &mdash; scales direct jobs to include indirect and induced employment</li>
+        <li><strong>policy_modifier(y)</strong> &mdash; adjusts regional distribution based on policy scenario</li>
+      </ul>
+      <p>Regional breakdown uses market share assumptions adjustable via dashboard controls.</p>
+    </div>
+
+    <div class="report-section">
+      <h3>Data Processing Pipeline</h3>
+      <ol>
+        <li>Raw source files are placed in <code>data/raw/</code></li>
+        <li>Each source is processed to extract quantitative data into CSVs under <code>data/processed/sensitivities/</code></li>
+        <li>Python scripts (<code>scripts/generate_dashboard_data.py</code>) read processed CSVs, perform curve fitting, and output JSON to <code>site/data/</code></li>
+        <li>The dashboard reads JSON data and renders interactive D3.js visualizations</li>
+        <li>GitHub Actions auto-deploys the site on each push</li>
+      </ol>
+    </div>
+
+    <div class="report-section">
+      <h3>Sensitivity Parameters</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--border); text-align:left;">
+            <th style="padding:0.5rem;">Sensitivity</th>
+            <th style="padding:0.5rem;">Parameter</th>
+            <th style="padding:0.5rem;">Range</th>
+            <th style="padding:0.5rem;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">Automation level</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">% reduction per year</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">0&ndash;8%</td>
+            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">Energy density</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">Wh/kg (cell level)</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">250&ndash;500</td>
+            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">Market share</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">% by region</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">varies</td>
+            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:0.5rem;">Manufacturing productivity</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">workers/GWh curve params</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">A, k, C</td>
+            <td style="padding:0.5rem;"><span class="sensitivity-tag active">Seed data</span></td>
+          </tr>
+          <tr>
+            <td style="padding:0.5rem;">Policy scenarios</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">regional multiplier</td>
+            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">0.7&ndash;1.4</td>
+            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Volta Foundation Workforce Committee &middot; Battery Manufacturing Workforce Outlook &middot; 2026</p>
+  <p style="margin-top:0.25rem;">Data last updated: <span id="last-updated">2026-06-03</span> &middot; <span class="status-badge draft">Draft</span></p>
+</footer>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>

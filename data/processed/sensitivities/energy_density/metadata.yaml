@@ -1,0 +1,22 @@
+sensitivity: energy_density
+description: "Impact of cell energy density improvements on workforce per GWh"
+status: placeholder
+
+parameters:
+  energy_density_wh_per_kg:
+    description: "Gravimetric energy density at the cell level"
+    unit: "Wh/kg"
+    baseline_2024: 250
+    projected_2030: 350
+    projected_2040: 450
+    projected_2050: 500
+    notes: "Higher energy density = fewer cells per GWh = potentially fewer workers"
+
+  density_labor_elasticity:
+    description: "% change in workers/GWh per % change in energy density"
+    unit: "dimensionless"
+    estimated_range: [-0.3, -0.5]
+    notes: "Negative because higher density reduces labor; placeholder estimate"
+
+datasets: []
+notes: "Awaiting primary source data. Relevant sources: BNEF, Battery Report 2025."

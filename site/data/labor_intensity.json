@@ -1,0 +1,58 @@
+{
+  "metadata": {
+    "title": "Labor Intensity: Workers per GWh vs. Factory Maturity",
+    "x_axis": "Years Since Factory Start",
+    "y_axis": "Workers per GWh",
+    "last_updated": "2026-06-03",
+    "curve_fit": {
+      "model": "exponential_decay",
+      "equation": "workers_per_gwh = A * exp(-k * t) + C",
+      "parameters": {
+        "A": 380,
+        "k": 0.5,
+        "C": 90
+      },
+      "r_squared": null,
+      "note": "Placeholder fit parameters — will be refined with real data"
+    }
+  },
+  "facilities": [
+    {
+      "name": "CATL (Global)",
+      "region": "China",
+      "data": [
+        {"year": 2019, "years_since_start": 8, "workers_per_gwh": 180, "workforce": 40000, "production_gwh": 222},
+        {"year": 2020, "years_since_start": 9, "workers_per_gwh": 160, "workforce": 50000, "production_gwh": 313},
+        {"year": 2021, "years_since_start": 10, "workers_per_gwh": 148, "workforce": 61000, "production_gwh": 412},
+        {"year": 2022, "years_since_start": 11, "workers_per_gwh": 145, "workforce": 80000, "production_gwh": 552},
+        {"year": 2023, "years_since_start": 12, "workers_per_gwh": 144, "workforce": 90000, "production_gwh": 625},
+        {"year": 2024, "years_since_start": 13, "workers_per_gwh": 143, "workforce": 97000, "production_gwh": 676}
+      ]
+    },
+    {
+      "name": "LGES (Wroclaw, Poland)",
+      "region": "EU",
+      "data": [
+        {"year": 2020, "years_since_start": 1, "workers_per_gwh": 464, "workforce": null, "production_gwh": null},
+        {"year": 2021, "years_since_start": 2, "workers_per_gwh": 350, "workforce": null, "production_gwh": null},
+        {"year": 2022, "years_since_start": 3, "workers_per_gwh": 200, "workforce": null, "production_gwh": null},
+        {"year": 2023, "years_since_start": 4, "workers_per_gwh": 120, "workforce": null, "production_gwh": null},
+        {"year": 2024, "years_since_start": 5, "workers_per_gwh": 81, "workforce": 7000, "production_gwh": 86}
+      ]
+    },
+    {
+      "name": "LGES (Michigan, US)",
+      "region": "US",
+      "data": [
+        {"year": 2024, "years_since_start": null, "workers_per_gwh": 108, "workforce": null, "production_gwh": null}
+      ]
+    },
+    {
+      "name": "PENA (Nevada, US)",
+      "region": "US",
+      "data": [
+        {"year": 2024, "years_since_start": null, "workers_per_gwh": 137, "workforce": null, "production_gwh": null}
+      ]
+    }
+  ]
+}
