@@ -126,12 +126,17 @@ def generate_labor_intensity():
 
 
 def generate_global_jobs():
-    """For now, copy the existing placeholder. Will be enhanced with real projection model."""
-    src = OUTPUT_DIR / "global_jobs.json"
-    if src.exists():
-        print(f"global_jobs.json exists — skipping (enhance this function to generate from processed data)")
+    """Placeholder — does not yet generate global_jobs.json from processed data.
+
+    TODO: Build projection model that reads from processed sensitivities
+    (market_share, policy_scenarios) and outputs site/data/global_jobs.json.
+    For now, global_jobs.json is maintained manually.
+    """
+    out_path = OUTPUT_DIR / "global_jobs.json"
+    if out_path.exists():
+        print(f"Skipped {out_path} — manual file exists (auto-generation not yet implemented)")
     else:
-        print("Warning: global_jobs.json not found")
+        print(f"Warning: {out_path} not found. Create it manually or implement this function.")
 
 
 def main():
