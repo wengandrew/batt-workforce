@@ -1,0 +1,70 @@
+region,soc_code,occupation_title,median_wage_2022,employment_2023,employment_2030,employment_change,annual_job_openings,source
+US,51-2000,Assemblers and Fabricators,38246,8881,43101,34220,4427,upjohn_naatbatt_2023
+US,51-9000,Other Production Occupations,42529,7934,38344,30410,4154,upjohn_naatbatt_2023
+US,51-4000,Metal Workers and Plastic Workers,46114,3816,18964,15148,1814,upjohn_naatbatt_2023
+US,17-2000,Engineers,90884,3723,19434,15711,1166,upjohn_naatbatt_2023
+US,53-7000,Material Moving Workers,38440,3145,15472,12328,2151,upjohn_naatbatt_2023
+US,13-1000,Business Operations Specialists,73972,3639,18211,14572,1536,upjohn_naatbatt_2023
+US,49-9000,"Other Installation, Maintenance, and Repair Occupations",53252,2203,11361,9159,1024,upjohn_naatbatt_2023
+US,11-3000,Operations Specialties Managers,123531,2148,10966,8818,828,upjohn_naatbatt_2023
+US,51-1000,Supervisors of Production Workers,66605,1895,9548,7653,884,upjohn_naatbatt_2023
+US,41-4000,"Sales Representatives, Wholesale and Manufacturing",72501,1828,9160,7332,812,upjohn_naatbatt_2023
+US,43-5000,"Material Recording, Scheduling, Dispatching, and Distributing Workers",43654,1684,8019,6334,761,upjohn_naatbatt_2023
+US,11-1000,Top Executives,118413,1736,8485,6749,675,upjohn_naatbatt_2023
+US,43-4000,Information and Record Clerks,42681,1302,5991,4689,757,upjohn_naatbatt_2023
+US,17-3000,"Drafters, Engineering Technicians, and Mapping Technicians",59539,1343,6702,5359,622,upjohn_naatbatt_2023
+US,53-3000,Motor Vehicle Operators,43381,1043,4585,3542,517,upjohn_naatbatt_2023
+US,11-9000,Other Management Occupations,131533,1028,5158,4130,422,upjohn_naatbatt_2023
+US,13-2000,Financial Specialists,79775,1082,5330,4248,401,upjohn_naatbatt_2023
+US,43-3000,Financial Clerks,46202,887,4004,3117,426,upjohn_naatbatt_2023
+US,43-9000,Other Office and Administrative Support Workers,39851,809,3610,2801,407,upjohn_naatbatt_2023
+US,11-2000,"Advertising, Marketing, Promotions, Public Relations, and Sales Managers",136685,754,3758,3004,290,upjohn_naatbatt_2023
+US,19-4000,"Life, Physical, and Social Science Technicians",52309,614,3069,2455,370,upjohn_naatbatt_2023
+US,47-2000,Construction Trades Workers,53366,910,3500,2590,295,upjohn_naatbatt_2023
+US,43-6000,Secretaries and Administrative Assistants,45809,753,3203,2450,330,upjohn_naatbatt_2023
+US,19-2000,Physical Scientists,86147,578,2982,2404,222,upjohn_naatbatt_2023
+US,43-1000,Supervisors of Office and Administrative Support Workers,65384,460,2119,1659,196,upjohn_naatbatt_2023
+US,49-3000,"Vehicle and Mobile Equipment Mechanics, Installers, and Repairers",56272,444,1852,1408,160,upjohn_naatbatt_2023
+US,19-1000,Life Scientists,105403,393,2001,1608,138,upjohn_naatbatt_2023
+US,51-8000,Plant and System Operators,55177,378,1759,1381,156,upjohn_naatbatt_2023
+US,41-3000,"Sales Representatives, Services",69641,338,1657,1319,149,upjohn_naatbatt_2023
+US,41-2000,Retail Sales Workers,39024,219,1094,875,177,upjohn_naatbatt_2023
+US,27-1000,Art and Design Workers,58828,285,1412,1127,133,upjohn_naatbatt_2023
+US,49-2000,"Electrical and Electronic Equipment Mechanics, Installers, and Repairers",59025,284,1371,1088,131,upjohn_naatbatt_2023
+US,49-1000,"Supervisors of Installation, Maintenance, and Repair Workers",78907,310,1436,1126,120,upjohn_naatbatt_2023
+US,37-2000,Building Cleaning and Pest Control Workers,34378,215,1062,847,149,upjohn_naatbatt_2023
+US,23-1000,"Lawyers, Judges, and Related Workers",176904,351,1780,1429,78,upjohn_naatbatt_2023
+US,53-1000,Supervisors of Transportation and Material Moving Workers,61288,248,1208,961,123,upjohn_naatbatt_2023
+Michigan,51-2000,Assemblers and Fabricators,38246,1431,5851,4420,637,upjohn_naatbatt_2023
+Michigan,51-4000,Metal Workers and Plastic Workers,46114,582,2397,1815,248,upjohn_naatbatt_2023
+Michigan,17-2000,Engineers,90884,654,2903,2248,202,upjohn_naatbatt_2023
+Michigan,51-9000,Other Production Occupations,42529,414,1707,1293,192,upjohn_naatbatt_2023
+Michigan,13-1000,Business Operations Specialists,73972,424,1806,1383,167,upjohn_naatbatt_2023
+Michigan,53-7000,Material Moving Workers,38440,324,1366,1042,183,upjohn_naatbatt_2023
+Michigan,15-2000,Computer Occupations,,294,1337,1043,93,upjohn_naatbatt_2023
+Michigan,11-3000,Operations Specialties Managers,123531,256,1122,866,87,upjohn_naatbatt_2023
+Michigan,51-1000,Supervisors of Production Workers,66605,194,838,644,86,upjohn_naatbatt_2023
+Michigan,49-9000,"Other Installation, Maintenance, and Repair Occupations",53252,158,739,581,73,upjohn_naatbatt_2023
+Michigan,17-3000,"Drafters, Engineering Technicians, and Mapping Technicians",59539,150,625,475,60,upjohn_naatbatt_2023
+Michigan,43-4000,Information and Record Clerks,42681,145,565,421,70,upjohn_naatbatt_2023
+Michigan,43-5000,"Material Recording, Scheduling, Dispatching, and Distributing Workers",43654,144,599,455,59,upjohn_naatbatt_2023
+Michigan,43-9000,Other Office and Administrative Support Workers,39851,134,529,394,60,upjohn_naatbatt_2023
+Michigan,11-1000,Top Executives,118413,134,573,438,50,upjohn_naatbatt_2023
+Michigan,47-2000,Construction Trades Workers,53366,123,517,394,56,upjohn_naatbatt_2023
+Michigan,41-4000,"Sales Representatives, Wholesale and Manufacturing",72501,129,547,418,55,upjohn_naatbatt_2023
+Michigan,13-2000,Financial Specialists,79775,123,516,392,46,upjohn_naatbatt_2023
+Michigan,11-9000,Other Management Occupations,131533,115,493,377,37,upjohn_naatbatt_2023
+Michigan,43-3000,Financial Clerks,46202,83,324,241,35,upjohn_naatbatt_2023
+Michigan,11-2000,"Advertising, Marketing, Promotions, Public Relations, and Sales Managers",136685,75,318,243,28,upjohn_naatbatt_2023
+Michigan,41-2000,Retail Sales Workers,39024,46,195,149,26,upjohn_naatbatt_2023
+Michigan,49-3000,"Vehicle and Mobile Equipment Mechanics, Installers, and Repairers",56272,53,228,175,23,upjohn_naatbatt_2023
+Michigan,43-6000,Secretaries and Administrative Assistants,45809,52,188,136,19,upjohn_naatbatt_2023
+Michigan,53-3000,Motor Vehicle Operators,43381,35,148,113,18,upjohn_naatbatt_2023
+Michigan,43-1000,Supervisors of Office and Administrative Support Workers,65384,41,161,121,16,upjohn_naatbatt_2023
+Michigan,41-3000,"Sales Representatives, Services",69641,31,131,100,15,upjohn_naatbatt_2023
+Michigan,19-2000,Physical Scientists,86147,33,133,100,13,upjohn_naatbatt_2023
+Michigan,23-1000,"Lawyers, Judges, and Related Workers",176904,44,188,144,10,upjohn_naatbatt_2023
+Michigan,37-2000,Building Cleaning and Pest Control Workers,34378,26,111,85,15,upjohn_naatbatt_2023
+Michigan,27-1000,Art and Design Workers,58828,28,118,90,11,upjohn_naatbatt_2023
+Michigan,23-2000,Legal Support Workers,,26,107,80,12,upjohn_naatbatt_2023
+Michigan,49-1000,"Supervisors of Installation, Maintenance, and Repair Workers",78907,23,99,75,9,upjohn_naatbatt_2023
