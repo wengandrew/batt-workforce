@@ -8,14 +8,63 @@ units:
 
 datasets:
   - file: labor_intensity_benchmarks.csv
-    description: "Compiled labor intensity data from publicly available sources"
+    description: "Workers/GWh vs. years-since-production-start for 4 cell plants (LGES Poland, LGES Michigan, PENA Nevada, CATL global), from the battery_labor_intensity_study v5 dataset. Drives View A scatter + characteristic curve."
     sources:
-      - committee_insights_paper
+      - battery_labor_intensity_study
     assumptions:
-      - "Production capacity = realized or deployed capacity, not announced/planned capacity"
       - "Workers include direct manufacturing employees only (not indirect/induced)"
+      - "years_since_start uses the study's v5 revised production-start years (Michigan 2013, PENA 2016, Poland 2017, CATL 2020)"
+      - "The t=0 / 1000 workers-per-GWh row per plant is an ENFORCED startup anchor (a modeling constraint in the study's anchored-logistic fit), not an observed value — phase=startup_anchor"
+      - "Characteristic curve = anchored logistic; floor reported as a 138-149 w/GWh band (v6 per-observation floor 137.8, v7 per-plant floor 148.5); View A leads with v7 ('typical plant')"
       - "CATL global figures aggregate all CATL facilities worldwide"
-      - "Some intermediate years for LGES Poland are interpolated from endpoint data"
+
+  - file: upjohn_supply_chain_segments.csv
+    description: "U.S. and Michigan lithium-ion battery supply chain employment by 12-segment NAATBatt/NREL classification (2023), with relative share of total"
+    sources:
+      - upjohn_naatbatt_2023
+    assumptions:
+      - "Based on the NAATBatt/NREL Lithium-Ion Supply Chain Database (June 2023), 502 commercial/pre-commercial facilities"
+      - "US figures correspond to 200 GWh nameplate production capacity in 2023; Michigan figures correspond to 32.2 GWh"
+      - "Employment reflects wage-and-salary employees only; excludes contract/temporary labor"
+      - "Anchor value: 63,667 jobs / 200 GWh = 318.5 jobs/GWh (full value chain, all 12 segments, US 2023)"
+
+  - file: upjohn_naics_employment.csv
+    description: "U.S. and Michigan battery-related employment by 3-digit NAICS industry, 2023 actual and 2030 projected"
+    sources:
+      - upjohn_naatbatt_2023
+    assumptions:
+      - "2030 projection assumes proportional scaling of 2023 employment with GWh growth (US: 200->1000 GWh, 5x; Michigan: 32.2->136 GWh, ~4.22x)"
+      - "Mining (NAICS 212) held constant 2023-2030 in both US and Michigan due to critical-mineral supply/permitting uncertainty"
+      - "US 1000 GWh by 2030 is a consensus estimate (Argonne, S&P Global, EDF); Michigan 136 GWh is Argonne's upper-bound estimate"
+      - "Author's framing: the 310,000 (US) / 30,527 (Michigan) 2030 totals should be viewed as an upper bound given risks to achieving forecast production capacity (raw material supply, construction timelines, equipment supply constraints, technical expertise gaps, EV demand uncertainty)"
+
+  - file: upjohn_occupations.csv
+    description: "Battery-related employment by SOC minor occupation group, US and Michigan, 2023 actual / 2030 projected, with 2022 median wages and estimated annual job openings"
+    sources:
+      - upjohn_naatbatt_2023
+    assumptions:
+      - "2030 occupational employment = projected industry employment (from upjohn_naics_employment.csv) x 2030 BLS occupational/industry staffing shares"
+      - "Annual job openings = ratio of US 2022-2032 BLS projected openings to 2022 employment, applied to battery-related 2023 employment"
+      - "Michigan occupations use Michigan Department of Technology, Management, and Budget occupational employment projections (2020-2030); median wages not separately reported for Michigan in the source and are left blank where unavailable (15-2000 Computer Occupations, 23-2000 Legal Support Workers)"
+      - "Top 3 occupations by employment change (assemblers/fabricators, other production occupations, metal/plastic workers) account for 32% of total US employment growth; engineers, business operations specialists, and operations specialty managers account for another 16%"
+
+  - file: upjohn_detailed_occupations.csv
+    description: "Detailed (6-digit SOC) occupations within each top-10 minor occupation group, with 2022 median wages, typical entry education, and typical on-the-job training duration"
+    sources:
+      - upjohn_naatbatt_2023
+    assumptions:
+      - "Source: BLS Occupational Outlook Handbook, as compiled in Upjohn/NAATBatt Appendix A (Tables A1-A9) plus Table 6"
+      - "Overall: 32% of 2030 battery-related employment is in occupations requiring a bachelor's degree or higher; 68% requires associate degree, postsecondary nondegree award, high school diploma, or no formal credential"
+      - "67% of workers in sub-bachelor's occupations receive moderate-term, long-term, or apprenticeship-style training after hire"
+
+  - file: icct_jobs_per_gwh.csv
+    description: "Jobs-per-GWh ratios by battery production segment (pack production combinations, cell components, recycling), derived from ICCT analysis of US company announcements and engineering studies (Argonne NMC622-G model, Cotterman et al. 2024, FEV Consulting 2023)"
+    sources:
+      - icct_battery_jobs_2024
+    assumptions:
+      - "Median/average/min/max represent the distribution across multiple underlying studies and facility announcements, not a single point estimate"
+      - "Integrated cells+modules+packs (95 jobs/GWh average) + cell components/recycling (49 jobs/GWh average) = ~144 jobs/GWh total for a fully vertically-integrated US facility — substantially below upjohn_naatbatt_2023's 318.5 jobs/GWh value-chain-wide figure, which additionally includes upstream raw materials, R&D, equipment manufacturing, service/repair, modeling, and distribution"
+      - "Cell component jobs/GWh derived from GREET model weight shares (cathode 25-30%, anode ~15%, electrolyte ~7% of cell weight) applied to a 100 kWh/vehicle assumption"
 
 mathematical_model:
   type: "exponential_decay"

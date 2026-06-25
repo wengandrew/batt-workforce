@@ -1,0 +1,13 @@
+segment,production_category,jobs_per_gwh_median,jobs_per_gwh_average,jobs_per_gwh_min,jobs_per_gwh_max,source
+Integrated cells+modules+packs,battery_pack,90,95,60,165,icct_battery_jobs_2024
+Modules+packs,battery_pack,50,52,35,70,icct_battery_jobs_2024
+Cells+modules,battery_pack,,45,,,icct_battery_jobs_2024
+Packs only,battery_pack,,22,,,icct_battery_jobs_2024
+Modules only,battery_pack,,20,,,icct_battery_jobs_2024
+Cells only,battery_pack,,50,,,icct_battery_jobs_2024
+Cathode,cell_component,,15,10,24,icct_battery_jobs_2024
+Anode,cell_component,,10,,,icct_battery_jobs_2024
+Electrolyte,cell_component,,4,,,icct_battery_jobs_2024
+Separator,cell_component,,3,,,icct_battery_jobs_2024
+Battery recycling,recycling,19,17,6,27,icct_battery_jobs_2024
+Cell components + recycling (total),component_and_recycling,,49,,,icct_battery_jobs_2024

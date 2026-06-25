@@ -1,0 +1,37 @@
+region,naics_code,naics_description,employment_2023,production_gwh_2023,employment_2030,production_gwh_2030,source
+US,212,Mining (except Oil and Gas),2012,200,2012,1000,upjohn_naatbatt_2023
+US,237,Heavy and Civil Engineering Construction,385,200,1925,1000,upjohn_naatbatt_2023
+US,325,Chemical Manufacturing,15299,200,76495,1000,upjohn_naatbatt_2023
+US,326,Plastics and Rubber Products Manufacturing,1455,200,7275,1000,upjohn_naatbatt_2023
+US,327,Nonmetallic Mineral Product Manufacturing,1452,200,7260,1000,upjohn_naatbatt_2023
+US,331,Primary Metal Manufacturing,447,200,2235,1000,upjohn_naatbatt_2023
+US,332,Fabricated Metal Product Manufacturing,335,200,1675,1000,upjohn_naatbatt_2023
+US,333,Machinery Manufacturing,1509,200,7545,1000,upjohn_naatbatt_2023
+US,334,Computer and Electronic Product Manufacturing,3935,200,19675,1000,upjohn_naatbatt_2023
+US,335,"Electrical Equipment, Appliance, and Component Manufacturing",22347,200,111735,1000,upjohn_naatbatt_2023
+US,336,Transportation Equipment Manufacturing,2506,200,12530,1000,upjohn_naatbatt_2023
+US,339,Miscellaneous Manufacturing,335,200,1675,1000,upjohn_naatbatt_2023
+US,423,"Merchant Wholesalers, Durable Goods",2576,200,12880,1000,upjohn_naatbatt_2023
+US,424,"Merchant Wholesalers, Nondurable Goods",215,200,1075,1000,upjohn_naatbatt_2023
+US,441,Motor Vehicle and Parts Dealers,165,200,825,1000,upjohn_naatbatt_2023
+US,488,Support Activities for Transportation,200,200,1000,1000,upjohn_naatbatt_2023
+US,513,Publishing Industries (incl. Software),739,200,3695,1000,upjohn_naatbatt_2023
+US,541,"Professional, Scientific, and Technical Services",7008,200,35040,1000,upjohn_naatbatt_2023
+US,561,Administrative and Support Services,99,200,495,1000,upjohn_naatbatt_2023
+US,562,Waste Management and Remediation Services,483,200,2415,1000,upjohn_naatbatt_2023
+US,811,Repair and Maintenance,165,200,825,1000,upjohn_naatbatt_2023
+US,Total,Total,63667,200,310287,1000,upjohn_naatbatt_2023
+Michigan,212,Mining (except Oil and Gas),400,32.2,400,136,upjohn_naatbatt_2023
+Michigan,325,Chemical Manufacturing,107,32.2,452,136,upjohn_naatbatt_2023
+Michigan,326,Plastics and Rubber Products Manufacturing,995,32.2,4202,136,upjohn_naatbatt_2023
+Michigan,333,Machinery Manufacturing,10,32.2,42,136,upjohn_naatbatt_2023
+Michigan,334,Computer and Electronic Product Manufacturing,318,32.2,1343,136,upjohn_naatbatt_2023
+Michigan,335,"Electrical Equipment, Appliance, and Component Manufacturing",3344,32.2,14124,136,upjohn_naatbatt_2023
+Michigan,336,Transportation Equipment Manufacturing,795,32.2,3358,136,upjohn_naatbatt_2023
+Michigan,423,"Merchant Wholesalers, Durable Goods",77,32.2,325,136,upjohn_naatbatt_2023
+Michigan,441,Motor Vehicle and Parts Dealers,125,32.2,528,136,upjohn_naatbatt_2023
+Michigan,541,"Professional, Scientific, and Technical Services",1191,32.2,5030,136,upjohn_naatbatt_2023
+Michigan,561,Administrative and Support Services,105,32.2,443,136,upjohn_naatbatt_2023
+Michigan,562,Waste Management and Remediation Services,40,32.2,169,136,upjohn_naatbatt_2023
+Michigan,811,Repair and Maintenance,26,32.2,110,136,upjohn_naatbatt_2023
+Michigan,Total,Total,7533,32.2,30527,136,upjohn_naatbatt_2023

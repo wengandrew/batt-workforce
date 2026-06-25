@@ -123,33 +123,48 @@
 
     // Curve fit line
     const cf = laborData.metadata.curve_fit;
-    if (cf && cf.parameters) {
+    const tMax = d3.max(allPoints, d => d.years_since_start);
+    if (cf && cf.characteristic_curves) {
+      // Anchored logistic from the labor-intensity study:
+      //   WPV(t) = a/(1+exp(-b*(t-c))) + WPV0,  WPV0 = anchor - a/(1+exp(b*c))
+      const anchor = cf.anchor_workers_per_gwh || 1000;
+      const sigmoid = (p, t) => {
+        const wpv0 = anchor - p.a / (1 + Math.exp(p.b * p.c));
+        return p.a / (1 + Math.exp(-p.b * (t - p.c))) + wpv0;
+      };
+      const curvePath = (p) => d3.line()
+        .x(d => x(d)).y(d => y(sigmoid(p, d))).curve(d3.curveNatural)(
+          d3.range(0, tMax + 0.001, 0.2));
+
+      const v7 = cf.characteristic_curves.v7_typical_plant;
+      const v6 = cf.characteristic_curves.v6_per_observation;
+
+      // v6 (per-observation) as a faint dashed reference, per the study's chart convention
+      if (v6) {
+        g.append('path').attr('d', curvePath(v6))
+          .attr('fill', 'none').attr('stroke', '#9ca3af')
+          .attr('stroke-width', 1.5).attr('stroke-dasharray', '4,4').attr('opacity', 0.5);
+      }
+      // v7 (typical plant) as the primary characteristic curve
+      if (v7) {
+        g.append('path').attr('d', curvePath(v7))
+          .attr('fill', 'none').attr('stroke', '#374151')
+          .attr('stroke-width', 2.5).attr('opacity', 0.9);
+
+        g.append('text')
+          .attr('x', x(tMax)).attr('y', y(v7.floor) - 8)
+          .attr('text-anchor', 'end').attr('font-size', '10px').attr('fill', '#374151')
+          .text(`characteristic curve — mature floor ${v7.floor} w/GWh (v7)`);
+      }
+    } else if (cf && cf.parameters) {
+      // Backward-compatible exponential fit: A*exp(-k*t)+C
       const { A, k, C } = cf.parameters;
-      const curveData = d3.range(0, 16, 0.2).map(t => ({
-        t: t,
-        y: A * Math.exp(-k * t) + C
-      }));
-
-      const line = d3.line()
-        .x(d => x(d.t))
-        .y(d => y(d.y))
-        .curve(d3.curveNatural);
-
+      const curveData = d3.range(0, (tMax || 15) + 1, 0.2).map(t => ({ t, y: A * Math.exp(-k * t) + C }));
       g.append('path')
         .datum(curveData)
-        .attr('d', line)
-        .attr('fill', 'none')
-        .attr('stroke', '#9ca3af')
-        .attr('stroke-width', 2)
-        .attr('stroke-dasharray', '6,4')
-        .attr('opacity', 0.8);
-
-      g.append('text')
-        .attr('x', x(14))
-        .attr('y', y(A * Math.exp(-k * 14) + C) - 10)
-        .attr('font-size', '10px')
-        .attr('fill', '#9ca3af')
-        .text(`y = ${A}e^(-${k}t) + ${C}`);
+        .attr('d', d3.line().x(d => x(d.t)).y(d => y(d.y)).curve(d3.curveNatural))
+        .attr('fill', 'none').attr('stroke', '#9ca3af')
+        .attr('stroke-width', 2).attr('stroke-dasharray', '6,4').attr('opacity', 0.8);
     }
 
     // Facility lines and points
@@ -278,14 +293,15 @@
 
     // Build projection data
     const demand = jobsData.global_gwh_demand.map((d, i) => {
-      const scaleGwh = d.gwh * (gwh2035Override / 4500);
+      // 6800 = McKinsey baseline 2035 demand (GWh); slider rescales the whole curve relative to it
+      const scaleGwh = d.gwh * (gwh2035Override / 6800);
 
       const yearOffset = d.year - 2024;
       const wpg = baseWpg * Math.pow(1 - effAutoRate, yearOffset);
 
       const shares = scenarioData.market_shares || jobsData.scenarios.baseline.market_shares;
 
-      // Get base shares, then normalize so they sum to 1.0 after applying US override
+      // Per-year regional production shares from the IEA GEVO 2026-anchored curves (see global_jobs.json market_share_note).
       const baseShares = {};
       let nonUsTotal = 0;
       ['US', 'EU', 'China', 'Rest of World'].forEach(region => {
@@ -293,12 +309,15 @@
         if (region !== 'US') nonUsTotal += baseShares[region];
       });
 
-      const remaining = 1.0 - usShareOverride;
+      // 0.08 = baseline US slider anchor (~2030 peak production share, IEA GEVO 2026); the slider
+      // rescales the whole US curve relative to it (cf. the GWh slider above), so the default is a no-op.
+      const usShare = baseShares['US'] * (usShareOverride / 0.08);
+      const remaining = Math.max(0, 1.0 - usShare);
       const scaleFactor = nonUsTotal > 0 ? remaining / nonUsTotal : 0;
 
       const regions = {};
       ['US', 'EU', 'China', 'Rest of World'].forEach(region => {
-        const share = region === 'US' ? usShareOverride : baseShares[region] * scaleFactor;
+        const share = region === 'US' ? usShare : baseShares[region] * scaleFactor;
         regions[region] = Math.round(scaleGwh * wpg * multiplier * share / 1000);
       });
 

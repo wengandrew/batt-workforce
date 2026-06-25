@@ -3,55 +3,172 @@
     "title": "Labor Intensity: Workers per GWh vs. Factory Maturity",
     "x_axis": "Years Since Factory Start",
     "y_axis": "Workers per GWh",
-    "last_updated": "2026-06-03",
+    "last_updated": "2026-06-24",
     "curve_fit": {
-      "model": "exponential_decay",
-      "equation": "workers_per_gwh = A * exp(-k * t) + C",
-      "parameters": {
-        "A": 380,
-        "k": 0.5,
-        "C": 90
-      },
-      "r_squared": null,
-      "note": "Placeholder fit parameters — will be refined with real data"
+      "model": "anchored_logistic",
+      "equation": "workers_per_gwh = a/(1+exp(-b*(t-c))) + WPV0;  WPV0 = 1000 - a/(1+exp(b*c))",
+      "source": "battery_labor_intensity_study (FINDINGS.md sec. 4-5)",
+      "anchor_workers_per_gwh": 1000,
+      "primary": "v7_typical_plant",
+      "mature_floor_band": [
+        137.8,
+        148.5
+      ],
+      "characteristic_curves": {
+        "v7_typical_plant": {
+          "a": -930.8,
+          "b": 2.94,
+          "c": 0.808,
+          "floor": 148.5,
+          "weighted_r_squared": 0.809,
+          "note": "equal-per-plant weighting; recommended for 'typical plant' framing"
+        },
+        "v6_per_observation": {
+          "a": -1030.8,
+          "b": 2.307,
+          "c": 0.708,
+          "floor": 137.8,
+          "r_squared": 0.874,
+          "note": "equal-per-observation; cite only for 'average across observations'"
+        }
+      }
     }
   },
   "facilities": [
     {
-      "name": "CATL (Global)",
-      "region": "China",
-      "data": [
-        {"year": 2019, "years_since_start": 8, "workers_per_gwh": 180, "workforce": 40000, "production_gwh": 222},
-        {"year": 2020, "years_since_start": 9, "workers_per_gwh": 160, "workforce": 50000, "production_gwh": 313},
-        {"year": 2021, "years_since_start": 10, "workers_per_gwh": 148, "workforce": 61000, "production_gwh": 412},
-        {"year": 2022, "years_since_start": 11, "workers_per_gwh": 145, "workforce": 80000, "production_gwh": 552},
-        {"year": 2023, "years_since_start": 12, "workers_per_gwh": 144, "workforce": 90000, "production_gwh": 625},
-        {"year": 2024, "years_since_start": 13, "workers_per_gwh": 143, "workforce": 97000, "production_gwh": 676}
-      ]
-    },
-    {
       "name": "LGES (Wroclaw, Poland)",
       "region": "EU",
       "data": [
-        {"year": 2020, "years_since_start": 1, "workers_per_gwh": 464, "workforce": null, "production_gwh": null},
-        {"year": 2021, "years_since_start": 2, "workers_per_gwh": 350, "workforce": null, "production_gwh": null},
-        {"year": 2022, "years_since_start": 3, "workers_per_gwh": 200, "workforce": null, "production_gwh": null},
-        {"year": 2023, "years_since_start": 4, "workers_per_gwh": 120, "workforce": null, "production_gwh": null},
-        {"year": 2024, "years_since_start": 5, "workers_per_gwh": 81, "workforce": 7000, "production_gwh": 86}
+        {
+          "year": 2017,
+          "workers_per_gwh": 1000.0,
+          "years_since_start": 0.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2018,
+          "workers_per_gwh": 504.0,
+          "years_since_start": 1.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2020,
+          "workers_per_gwh": 115.0,
+          "years_since_start": 3.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2022,
+          "workers_per_gwh": 93.0,
+          "years_since_start": 5.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2024,
+          "workers_per_gwh": 81.0,
+          "years_since_start": 7.0,
+          "workforce": 7000.0,
+          "production_gwh": 86.0
+        }
       ]
     },
     {
       "name": "LGES (Michigan, US)",
       "region": "US",
       "data": [
-        {"year": 2024, "years_since_start": null, "workers_per_gwh": 108, "workforce": null, "production_gwh": null}
+        {
+          "year": 2013,
+          "workers_per_gwh": 1000.0,
+          "years_since_start": 0.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2018,
+          "workers_per_gwh": 270.0,
+          "years_since_start": 5.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2024,
+          "workers_per_gwh": 111.0,
+          "years_since_start": 11.0,
+          "workforce": null,
+          "production_gwh": null
+        }
       ]
     },
     {
       "name": "PENA (Nevada, US)",
       "region": "US",
       "data": [
-        {"year": 2024, "years_since_start": null, "workers_per_gwh": 137, "workforce": null, "production_gwh": null}
+        {
+          "year": 2016,
+          "workers_per_gwh": 1000.0,
+          "years_since_start": 0.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2018,
+          "workers_per_gwh": 152.0,
+          "years_since_start": 2.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2022,
+          "workers_per_gwh": 141.0,
+          "years_since_start": 6.0,
+          "workforce": null,
+          "production_gwh": null
+        }
+      ]
+    },
+    {
+      "name": "CATL (Global)",
+      "region": "China",
+      "data": [
+        {
+          "year": 2020,
+          "workers_per_gwh": 1000.0,
+          "years_since_start": 0.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2021,
+          "workers_per_gwh": 467.0,
+          "years_since_start": 1.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2022,
+          "workers_per_gwh": 226.0,
+          "years_since_start": 2.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2023,
+          "workers_per_gwh": 156.0,
+          "years_since_start": 3.0,
+          "workforce": null,
+          "production_gwh": null
+        },
+        {
+          "year": 2024,
+          "workers_per_gwh": 144.0,
+          "years_since_start": 4.0,
+          "workforce": null,
+          "production_gwh": null
+        }
       ]
     }
   ]

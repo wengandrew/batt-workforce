@@ -1,70 +1,152 @@
 ## Primary Source Registry
 ## Status tracking for all research sources identified in the Committee Insights paper.
 ## Each source should be (a) provided as a raw file and (b) processed into structured data.
+##
+## Each entry also carries: url, source_type, and credibility: {tier, rationale}.
+## Credibility is rated on a 7-tier scale (1 = most credible, 7 = least credible) —
+## see data/processed/sources/README.md for the scale and the per-source markdown
+## file format (data/processed/sources/<id>.md).
 
 sources:
   - id: mckinsey_research
-    name: "McKinsey Research"
-    description: "Industry workforce benchmarks for battery manufacturing"
-    provided: false
+    name: "McKinsey — Battery 2035: Building New Advantages"
+    description: "Industry workforce benchmarks for battery manufacturing, scrap rates in early-stage gigafactories"
+    provided: true
     processed: false
+    raw_file: "data/raw/mckinsey_research.pdf"
+    url: "https://www.mckinsey.com/features/mckinsey-center-for-future-mobility/our-insights/battery-2035-building-new-advantages"
+    source_type: "management consultancy research/insights article"
+    sensitivities: [manufacturing_productivity, automation, policy_scenarios, market_share]
+    notes: "January 2026 article (Battery Accelerator Team). Scrap rates during early ramp-up reported as 70-80% (i.e. 20-30% yield), improving to 95%+ within 18 months — higher than the 20-40% figure cited for linkedin_chinese_gigafactory_scrap; cross-check the two before combining. Labor intensity benchmark: 30-40 FTE/GWh. Confirms key claim: operator skills/quality-consistency are decisive, structured training/competency systems recommended (some battery startups failed due to skills deficits). Automation (digital twins, inline metrology, SPC, high-speed stacking, dry electrode coating) shifts workforce toward technical/diagnostic roles. Notes IRA Section 45X and EU localization requirements as cost/capex drivers relevant to policy_scenarios. Used in Stage-5 demand band modeling; distinct from mckinsey_demand_outlook_2025. GLOBAL DEMAND OUTLOOK (drives View B demand curve in site/data/global_jobs.json): 1.0 TWh in 2024, ~1.6 TWh in 2025, 4.2 TWh in 2030, 6.8 TWh in 2035 (>85% Li-ion); ~21%/yr CAGR 2025-30 decelerating to ~10%/yr 2030-35. 2040-2050 demand is extrapolated beyond McKinsey's horizon (analyst assumption, not sourced)."
+    credibility:
+      tier: 4
+      rationale: "Major management consultancy with deep industry expertise; specific manufacturing claims require verification against primary data"
+
+  - id: iea_gevo_2026
+    name: "IEA — Global EV Outlook 2026 (Battery Manufacturing & Trade)"
+    description: "Post-OBBBA regional battery cell manufacturing capacity/production shares; PRIMARY source for the View B regional market-share matrix (market_shares in global_jobs.json)"
+    provided: false
+    processed: true
     raw_file: null
-    sensitivities: []
-    notes: "Referenced in Committee Insights paper"
+    url: "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade"
+    source_type: "intergovernmental agency report (free / publicly downloadable)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Published 2026-05-20 — the first major EV outlook that is POST-OBBBA (One Big Beautiful Bill Act, signed 2025-07-04), so it reflects the repeal of the consumer EV credits while the 45X manufacturing credit was preserved (phase-down 2030-2033). Key figures: global nameplate Li-ion cell capacity >4 TWh end-2025 (~30% YoY growth), ~6.5 TWh of committed projects by 2030 (up to ~9 TWh if all announcements complete, ~70% committed). China >80-85% of global cell production in 2025 falling to ~two-thirds (~67%) by 2030. US cell PRODUCTION <350 GWh (2030) and just over 400 GWh (2035) at only ~40% utilization of committed nameplate, primarily serving domestic needs (remainder exported to Mexico). EU & US each ~6-7% of global capacity in 2025; in the EU, Korean-firm share of capacity falls ~85%->30% (2030) while EU-based firms rise 5%(2024)->20%. Against the McKinsey global demand base this gives a US production share of ~8.3% (2030) declining to ~5.9% (2035) — a peak-then-decline driven by the post-OBBBA US demand collapse (~10% of car sales vs ~50% previously projected). Free/public (no paywall) — chosen over BNEF EVO 2025 for both post-OBBBA timeliness AND reproducibility. Drives market_shares (US/EU/China/Rest of World) in site/data/global_jobs.json; non-US split and post-2035 years are interpolated."
+    credibility:
+      tier: 2
+      rationale: "IEA flagship annual outlook, freely published with downloadable data; authoritative and widely cited, though forward projections (STEPS/APS scenarios) carry forecast uncertainty"
+
+  - id: iea_ev_data_explorer_2026
+    name: "IEA — Global EV Data Explorer 2026 (GEVO 2026 data annex)"
+    description: "Companion downloadable dataset to GEVO 2026 (iea_gevo_2026): DEMAND-side EV statistics (sales, stock, charging, prices) and battery DEPLOYMENT by macro-region/year. Used as the post-OBBBA global-demand cross-check; NOT a manufacturing-capacity source."
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/EV Data Explorer 2026.xlsx"
+    url: "https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer"
+    source_type: "intergovernmental agency data tool (free / publicly downloadable .xlsx)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Uploaded to research/model_inputs/ (gitignored). 49,176-row workbook, sheet GEVO_EV_2026; parameters = EV sales/stock/charging/prices and 'Battery deployment' (GWh of batteries in EVs sold). IMPORTANT: this annex is DEMAND-side only — it has NO cell-manufacturing-capacity parameter, so it CANNOT supply the per-region manufacturing split for market_shares (that split is anchored on the GEVO 2026 report's manufacturing chapter + chart data — see iea_gevo_2026). Its value here is the post-OBBBA GLOBAL-DEMAND cross-check on the locked McKinsey backbone: world battery deployment 953 GWh (2024), 1,191 GWh (2025) historical; 4,740 GWh (2035 STEPS) / 4,072 GWh (2035 CPS) — ~30% below McKinsey's 6,800 GWh. Regional DEPLOYMENT shares (≠ manufacturing shares; e.g. US deploys ~12% in 2024 but manufactures ~4-5%) recorded for context only. Projection years are 2025 + 2035 only (no 2030/2050). Documented in global_jobs.json -> metadata.demand_gap_note."
+    credibility:
+      tier: 2
+      rationale: "IEA flagship data tool, freely downloadable and reproducible; demand-side historical data is high-confidence, forward STEPS/CPS projections carry forecast uncertainty"
+
+  - id: bnef_evo_2025
+    name: "BloombergNEF — Electric Vehicle Outlook 2025 (Global Battery Cell Manufacturing Capacity)"
+    description: "PRE-OBBBA cross-check (superseded as primary by iea_gevo_2026): risk-adjusted and as-reported global lithium battery cell manufacturing capacity by region, 2020-2030 (TWh)"
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/Global Production Capacity Forecast - BNEF EVO 2025.csv"
+    url: "https://about.bnef.com/electric-vehicle-outlook/"
+    source_type: "commercial market-research / industry forecast (subscription)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "DEMOTED to a pre-OBBBA cross-check (no longer the primary market-share source — see iea_gevo_2026). Two reasons: (1) published June 2025, BEFORE the One Big Beautiful Bill Act (2025-07-04), so it assumes IRA-intact US demand and shows the US production share RISING to ~8% by 2035 — the opposite of the post-OBBBA peak-then-decline IEA now shows; (2) BNEF EVO is subscription-only, so the per-region figures are not publicly reproducible (the raw CSV is gitignored and not redistributed; only attributed, derived figures are cited). Original risk-adjusted figures (TWh): China 2.04 (2024)->6.47 (2030); US 0.11->0.63; Europe 0.26->0.90; sum-of-regions 2.47->8.50; global as-reported 4.63->13.98. US share of risk-adjusted regional total: 4.5% (2024), 5.0% (2025), 7.4% (2030). Still useful as a capacity cross-check: the supply-vs-demand finding (McKinsey demand at 40-49% of risk-adjusted capacity through 2030, so demand binds) holds under both BNEF and IEA."
+    credibility:
+      tier: 2
+      rationale: "BloombergNEF flagship industry forecast using bottom-up, risk-adjusted capacity modeling and widely used as an industry benchmark; commercial (non-peer-reviewed), subscription-only, and pre-OBBBA"
 
   - id: ohio_research
-    name: "Ohio Research"
-    description: "Regional workforce study for battery industry in Ohio"
-    provided: false
+    name: "Ohio Governor's Office of Workforce Transformation / OMA — Accelerating Ohio's Auto & Advanced Mobility Workforce (2023)"
+    description: "State workforce strategy roadmap (v2.0): EV/battery job projections and regional employer-level breakdowns for Ohio"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "State-level analysis"
+    raw_file: "data/raw/ohio_research.pdf"
+    url: "https://workforce.ohio.gov"
+    source_type: "state government workforce strategy report (co-published with Ohio Manufacturers' Association, developed with Accenture)"
+    sensitivities: [manufacturing_productivity, automation, policy_scenarios, market_share]
+    notes: "106-page roadmap (v2.0, June 2023) based on 70+ stakeholder interviews. Projects 25,000+ new EV/battery-related jobs in Ohio by 2030 (~30% increase over current automotive workforce), driven by named investments: Honda/LG Energy Solution battery plant (Fayette County, 2,200 jobs), Ford EV plant (Lorain County, 1,800 jobs), SEMCORP separator film facility (1,200 jobs). States battery cell manufacturing requires a greater share of labor hours than ICE powertrains. Flags critical trades/technician skill gaps (e.g. only 156 electrician apprenticeship completions in NE Ohio in 2022) as the bottleneck rather than engineering supply."
+    credibility:
+      tier: 2
+      rationale: "Official state government strategic planning document (Governor's Office of Workforce Transformation) co-published with state trade association (OMA), developed with Accenture; grounded in 70+ stakeholder interviews and facility-level investment tracking"
 
   - id: c2es_research
-    name: "C2ES Research"
-    description: "Center for Climate and Energy Solutions workforce analysis"
-    provided: false
+    name: "C2ES / Greenline Insights — The Economic Upside of Building the Battery Supply Chain in the Southeast United States"
+    description: "IMPLAN input-output analysis of battery supply-chain investment and job creation across the Southeast US (April 2026)"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Climate/energy policy lens"
+    raw_file: "data/raw/c2es_research.pdf"
+    url: null
+    source_type: "policy think tank report (IMPLAN economic-impact analysis)"
+    sensitivities: [market_share, policy_scenarios, manufacturing_productivity]
+    notes: "$102B investment (2026-35) projected to create 374k Southeast jobs (Georgia 84.2k, NC 73.2k); 36% of job creation in construction, 28% in manufacturing; 5-15% cross-state spillover effects; flags upstream materials/refining gap. IMPLAN multiplier ~3.4x (cited in Stage-5 claim UNDR-03 on multiplier bias)."
+    credibility:
+      tier: 3
+      rationale: "Academic-grade policy research (C2ES + Greenline Insights) using IMPLAN input-output modeling and stakeholder engagement"
 
   - id: epi_report
-    name: "EPI Report"
-    description: "Economic Policy Institute labor market data"
-    provided: false
+    name: "EPI Report — EV Policy and Workers"
+    description: "Economic Policy Institute labor market analysis; policy-driven workforce distribution in battery manufacturing (+150k vs -75k by 2030)"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Job quality and labor economics perspective"
+    raw_file: "data/raw/epi_report.pdf"
+    url: "https://www.epi.org/publication/ev-policy-workers/"
+    source_type: "labor-economics think tank publication"
+    sensitivities: [policy_scenarios, automation, manufacturing_productivity, market_share]
+    notes: "\"The stakes for workers...\" (Barrett & Bivens, Sept 2021), with BlueGreen Alliance/AFL-CIO/UAW/USW collaboration. +150k jobs by 2030 if U.S. EV powertrain domestic content rises from 45% to ICE-level (~75%) AND domestic vehicle assembly share rises 10pp (to 60%); -75k jobs if policy inaction stalls both. BEV assembly requires ~30% fewer labor hours than ICE; PHEVs require ~20% more than ICE (temporary buffer). Regional concentration: 54.8% of auto jobs in Upper Midwest, 30.1% in South. Notes union wage premium erosion (60% in late 1980s -> 7% in 2020) and 14% of production workers on temp-agency contracts at depressed wages."
+    credibility:
+      tier: 4
+      rationale: "Respected labor economics research organization with focus on worker welfare and policy impact; uses IMPLAN input-output modeling"
 
   - id: gba_report_2019
-    name: "GBA Report (2019)"
-    description: "Global Battery Alliance workforce data"
-    provided: false
+    name: "WEF / Global Battery Alliance — A Vision for a Sustainable Battery Value Chain in 2030 (2019)"
+    description: "WEF/GBA flagship report projecting 10M global battery value-chain jobs by 2030"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "2019 baseline data"
+    raw_file: "data/raw/gba_report_2019.pdf"
+    url: "https://www.weforum.org/publications/a-vision-for-a-sustainable-battery-value-chain-in-2030/"
+    source_type: "WEF/industry alliance insight report"
+    sensitivities: [market_share, policy_scenarios, manufacturing_productivity, automation]
+    notes: "September 2019 report (analytical support from McKinsey & SYSTEMIQ, 60+ GBA member orgs). Projects the battery value chain will sustain 10 million additional safe/fair/good-quality jobs globally by 2030 (from ~2M in 2018), with >50% in emerging economies. China expected to hold ~43% of global battery demand by 2030. Heavy emphasis on mining (artisanal/industrial cobalt, lithium, nickel labor conditions) and cell production scale-up; flags reskilling/upskilling as critical as automation/productivity improve. 2019 vantage point makes this a useful historical baseline vs. current 2050 projections."
+    credibility:
+      tier: 3
+      rationale: "WEF flagship report co-authored with Global Battery Alliance (60+ member organizations including major battery manufacturers, miners, and OEMs); analytical support from McKinsey & SYSTEMIQ with transparent demand/regional-share modeling and multi-stakeholder governance"
 
   - id: argonne_li_bridge_car
-    name: "Argonne/Li-Bridge funded CAR Workforce Report"
-    description: "Center for Automotive Research workforce study funded by Li-Bridge"
-    provided: false
+    name: "Center for Automotive Research (CAR) — BIETNA Battery Industry & EV Technology North America Report"
+    description: "Comprehensive workforce assessment (BIETNA) identifying skills gaps and critical roles across the battery supply chain; funded by Argonne National Lab and Li-Bridge"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Argonne National Lab partnership"
+    raw_file: "data/raw/argonne_li_bridge_car.md"
+    url: "https://www.cargroup.org/bietna/"
+    source_type: "academic/national-lab-affiliated research organization report"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Argonne National Lab partnership. Identifies largest shortages in upstream (mining, refining) and downstream (cell manufacturing, pack assembly) segments; critical skills include chemistry, chemical engineering, and battery management systems."
+    credibility:
+      tier: 3
+      rationale: "CAR is a respected non-profit research institute; co-funded by Argonne National Laboratory (Tier 1) with Li-Bridge industry consortium input"
 
   - id: battery_talent_census
-    name: "Battery Talent Census"
-    description: "Talent pipeline and skills inventory for battery industry"
-    provided: false
+    name: "Volta Foundation — Battery Talent Census Report"
+    description: "Skills, training, and growth insights from a survey of 1,000 battery professionals (SSRN, updated Feb 2026)"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Workforce skills and training data"
+    raw_file: "data/raw/battery_talent_census.pdf"
+    url: "https://doi.org/10.2139/ssrn.5446555"
+    source_type: "industry survey/census (Volta Foundation primary survey, SSRN preprint)"
+    sensitivities: [manufacturing_productivity]
+    notes: "Skills gaps concentrated in manufacturing scale-up, process engineering, electrochemistry; 90% of skills learned on-the-job; 36% of US battery professionals are non-citizens; 2.3-year average tenure; 83% of career success attributed to soft skills."
+    credibility:
+      tier: 2
+      rationale: "Volta Foundation's own primary survey of 1,000 battery professionals, published via SSRN"
 
   - id: battery_business_directory
     name: "Battery Business Directory"
@@ -72,8 +154,13 @@ sources:
     provided: false
     processed: false
     raw_file: null
+    url: null
+    source_type: "commercial business directory"
     sensitivities: []
     notes: "Cross-reference with workforce estimates"
+    credibility:
+      tier: 5
+      rationale: "provisional — based on publisher reputation, pending source document"
 
   - id: stanford_battery_summit
     name: "Stanford Battery Summit Exec Summary"
@@ -81,35 +168,55 @@ sources:
     provided: false
     processed: false
     raw_file: null
+    url: null
+    source_type: "conference executive summary"
     sensitivities: []
     notes: "Academic/industry perspective"
+    credibility:
+      tier: 6
+      rationale: "provisional — based on publisher reputation, pending source document"
 
   - id: bnef_ev_outlook
-    name: "BNEF EV Outlook"
-    description: "Bloomberg NEF electric vehicle and battery demand projections"
-    provided: false
+    name: "BNEF EV Outlook (June 2025)"
+    description: "Bloomberg NEF electric vehicle and battery demand projections; June 2025 edition"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Key demand forecast input for View B"
+    raw_file: "data/raw/bnef_ev_outlook_2025.pdf"
+    url: null
+    source_type: "market-intelligence firm report"
+    sensitivities: [market_share]
+    notes: "Key demand forecast input for View B. Revision: -8% cut (~-3.4 TWh from prior outlook) to 2030-2035 demand band. Cross-ref Stage-5 claim DEMAND-01."
+    credibility:
+      tier: 4
+      rationale: "BloombergNEF is a leading market-intelligence firm; demand forecasts based on public vehicle announcements, battery supply chain tracking, and policy modeling"
 
   - id: ev_sales_charging_2035
-    name: "EV Sales and Charging Infrastructure Through 2035"
-    description: "EV adoption and infrastructure projections"
-    provided: false
+    name: "Electric Vehicle Sales and the Charging Infrastructure Required Through 2035"
+    description: "Consensus EV adoption and charging-infrastructure forecast through 2035 (October 2024)"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Demand planning baseline"
+    raw_file: "data/raw/ev_sales_charging_2035.pdf"
+    url: null
+    source_type: "industry association consensus forecast (Edison Electric Institute)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Consensus of 4 independent forecasts (Guidehouse, BCG, PwC, EY): 78.5M EV stock by 2035 (26% of US fleet); 12.2M annual EV sales in 2035 (72% of light-duty sales); 42.2M charge ports incl. 325k DCFC. Driven by EPA standards and IIJA funding; predates 2026 policy changes."
+    credibility:
+      tier: 4
+      rationale: "Industry-association consensus forecast aggregating multiple market-intelligence firms; subject to policy volatility"
 
   - id: battery_report_2025_talent
-    name: "Battery Report 2025 - Talent Section"
-    description: "Recent talent and workforce data from Battery Report 2025"
-    provided: false
+    name: "Volta Foundation — 2025 Battery Report (Talent Section)"
+    description: "Talent/workforce section of Volta Foundation's 2025 Battery Report, compiling public company data and University of Michigan research"
+    provided: true
     processed: false
-    raw_file: null
-    sensitivities: []
-    notes: "Most recent annual data"
+    raw_file: "data/raw/battery_report_2025_talent.pdf"
+    url: null
+    source_type: "industry report (Volta Foundation compilation)"
+    sensitivities: [manufacturing_productivity]
+    notes: "Labor intensity ramp-up >400 workers/GWh, steady-state 80-143 workers/GWh (LGES Wroclaw 81, LGES Michigan 108, PENA Nevada 137, CATL 143) — matches Committee Insights seed data. Substantial overlap with battery_talent_census; both Volta Foundation outputs. Cited in Stage-5 manufacturing-productivity baseline."
+    credibility:
+      tier: 2
+      rationale: "Volta Foundation report compiling public company disclosures and independent University of Michigan research"
 
   - id: workplace_demand_studies
     name: "Workplace Demand Studies"
@@ -130,13 +237,18 @@ sources:
     notes: "GDP, employment trends"
 
   - id: ev_labor_intensity_study
-    name: "EV Labor Intensity Study (Andrew's paper)"
-    description: "Primary research on EV manufacturing labor intensity"
-    provided: false
+    name: "Weng et al. (2024) — Higher labor intensity in US automotive assembly plants after transitioning to electric vehicles"
+    description: "Peer-reviewed (Nature Communications) empirical study of labor-intensity changes at US auto assembly plants transitioning to EV production"
+    provided: true
     processed: false
-    raw_file: null
+    raw_file: "data/raw/ev_labor_intensity_study.pdf"
+    url: "https://doi.org/10.1038/s41467-024-52435-x"
+    source_type: "peer-reviewed academic journal article (Nature Communications)"
     sensitivities: [manufacturing_productivity]
-    notes: "Key primary source for labor intensity curve"
+    notes: "Core primary source for the View A labor-intensity curve. Uses US Quarterly Workforce Indicators (NAICS 3361, county-level) plus plant-level cases (Tesla Alameda steady-state, GM Orion 5-yr transition, Rivian McLean ramp-up). Finding: BEV assembly shows >10x labor intensity during ramp-up and ~3x higher intensity after a decade vs. ICEV baseline; ~15+ years to reach labor-intensity parity. Note: This is assembly labor intensity, NOT cell manufacturing (Stage-5 explicitly distinguishes assembly from cell tier)."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed Nature Communications article; underlying data drawn from US Census Bureau Quarterly Workforce Indicators (Tier 1 government data)"
 
   - id: committee_insights_paper
     name: "Committee Insights Paper"
@@ -167,3 +279,789 @@ sources:
         workers_per_gwh: 464
         year: 2020
         type: "ramp_up"
+
+  ## Sources ported from the Committee Insights research tracker (2026-06-11)
+
+  - id: netl_bwi_guideline_standards
+    name: "DOE/NETL Battery Workforce Initiative — National Guideline Standards"
+    description: "Federal occupational skill standards for battery machine operator and repair technician roles"
+    provided: true
+    processed: false
+    raw_file: "data/raw/netl_bwi_guideline_standards.md"
+    url: "https://netl.doe.gov/bwi/national-guideline-standards"
+    source_type: "government technical resource"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Official federal occupational standards: ~8,000-hour apprenticeship + 608 classroom hours for repair tech; 12-competency operator track. Informs training duration and skill taxonomy."
+    credibility:
+      tier: 1
+      rationale: "U.S. Department of Energy program providing official federal occupational standards"
+
+  - id: dallasfed_battery_belt_2022
+    name: "Federal Reserve Bank of Dallas — Battery Belt Research Note (Plante & Rindels, 2022)"
+    description: "Analysis of U.S. battery manufacturing clustering, gigafactory concentration, and IRA policy drivers"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.dallasfed.org/research/economics/2022/1011"
+    source_type: "Federal Reserve research publication"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Not archived: HTTP 403. Cited as analyzing >15 gigafactories (>$40B) since 2021, clustering by auto proximity + transport cost, and IRA incentives. Relevant to policy_scenarios and market_share."
+    credibility:
+      tier: 1
+      rationale: "Federal Reserve System official research publication"
+
+  - id: ky_blueoval_sk_update_2023
+    name: "Kentucky Cabinet for Economic Development — BlueOval SK Update (2023)"
+    description: "August 2023 construction progress report for BlueOval SK battery facility; 5,000 permanent jobs, 80 GWh/year capacity"
+    provided: true
+    processed: false
+    raw_file: "data/raw/ky_blueoval_sk_update_2023.md"
+    url: "https://ced.ky.gov/Newsroom/NewsPage/20230809_BlueOvalSK_Update"
+    source_type: "state economic development press release"
+    sensitivities: [market_share, policy_scenarios, manufacturing_productivity]
+    notes: "Key metric: 5,000 jobs / 80 GWh ≈ 62.5 jobs/GWh for cell manufacturing. $25M ECTC training center (state co-investment)."
+    credibility:
+      tier: 1
+      rationale: "Official Kentucky state government economic development agency"
+
+  - id: ky_blueoval_sk_training_funds
+    name: "Kentucky Cabinet for Economic Development — BlueOval SK Workforce Training Funds (2023)"
+    description: "November 2023 announcement of $10M state training grant for BlueOval SK workforce; total state investment $36.4M"
+    provided: true
+    processed: false
+    raw_file: "data/raw/ky_blueoval_sk_training_funds.md"
+    url: "https://newkentuckyhome.ky.gov/Newsroom/NewsPage/20231102_BSSC_BOSK"
+    source_type: "state workforce funding announcement"
+    sensitivities: [policy_scenarios, manufacturing_productivity]
+    notes: "$10M BlueOval SK + $25M ECTC + $1.4M broader programs = $36.4M state investment. Training curriculum covers maintenance, lean, safety, process improvement, systems thinking, and battery tech."
+    credibility:
+      tier: 1
+      rationale: "Official Kentucky state government workforce funding announcement"
+
+  - id: legiscan_tn_hb1342
+    name: "Tennessee General Assembly — HB 1342 Bill Text (LegiScan)"
+    description: "Tennessee state legislation conditioning economic incentives on secret-ballot union election procedures"
+    provided: true
+    processed: false
+    raw_file: "data/raw/legiscan_tn_hb1342.pdf"
+    url: "https://legiscan.com/TN/text/HB1342/id/2811448"
+    source_type: "state legislation"
+    sensitivities: [policy_scenarios]
+    notes: "Chaptered bill text (TCA Sec. 4-3-739): prohibits card-check union recognition and requires secret-ballot NLRB elections as a condition of state economic incentives; blocks disclosure of employee contact info to labor orgs without consent; 10-year compliance term for projects >=$25M; enforced via clawback through the Dept. of Economic & Community Development. BlueOval City exempted (pre-July 2024 execution)."
+    credibility:
+      tier: 1
+      rationale: "Official legislative record (primary source)"
+
+  - id: jobsohio_lg_honda_workforce
+    name: "JobsOhio — Workforce Wins: LG Energy Solution / Honda Battery Plant"
+    description: "Case study of state workforce coordination for LG-Honda battery facility; 600+ hires by March 2026"
+    provided: true
+    processed: false
+    raw_file: "data/raw/jobsohio_lg_honda_workforce.md"
+    url: "https://www.jobsohio.com/newsroom/ohio-success/workforce-wins-forging-key-connections-with-lg-energy-solution-honda"
+    source_type: "state economic development organization case study"
+    sensitivities: [manufacturing_productivity, market_share, policy_scenarios]
+    notes: "$3.5B facility investment; 600+ hires 2023-2026 (~200/yr ramp). Multi-agency coordination model; useful for staffing-timeline modeling."
+    credibility:
+      tier: 2
+      rationale: "JobsOhio is a quasi-governmental state economic development organization; official but promotional in tone"
+
+  - id: upjohn_naatbatt_2023
+    name: "W.E. Upjohn Institute / NAATBatt — U.S. Lithium-Ion Battery Supply Chain Workforce Report (2023)"
+    description: "Comprehensive supply-chain workforce assessment: 63.7k jobs (2023), 310k projected (2030); detailed occupational breakdown and wage data"
+    provided: true
+    processed: true
+    raw_file: "data/raw/upjohn_naatbatt_2023.pdf"
+    url: "https://research.upjohn.org/cgi/viewcontent.cgi?article=1308&context=reports"
+    source_type: "academic research institute report"
+    sensitivities: [manufacturing_productivity, automation, energy_density, market_share]
+    notes: "Deep-extracted into manufacturing_productivity sensitivity: 63.7k jobs / 200 GWh = 318.5 jobs/GWh value-chain baseline (US 2023); 310k jobs / 1000 GWh projected by 2030 (5x scaling, mining held constant). Segment breakdown (US + Michigan, 12-segment NAATBatt classification), NAICS industry employment 2023/2030, SOC minor-group occupational employment/wages/job openings, and detailed (6-digit SOC) occupations with education/training requirements — see upjohn_supply_chain_segments.csv, upjohn_naics_employment.csv, upjohn_occupations.csv, upjohn_detailed_occupations.csv."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed academic research institute (Upjohn) partnering with industry association (NAATBatt); 27-page technical report"
+
+  - id: icct_battery_jobs_2024
+    name: "ICCT — Battery Jobs Working Paper (2024)"
+    description: "NGO analysis of labor intensity across the battery value chain, with jobs/GWh estimates by segment (cell, module, pack, components, recycling)"
+    provided: true
+    processed: true
+    raw_file: "data/raw/icct_battery_jobs_2024.pdf"
+    url: "https://theicct.org/wp-content/uploads/2024/12/ID-255-–-Battery-jobs_working-paper_final.pdf"
+    source_type: "NGO/academic research working paper"
+    sensitivities: [manufacturing_productivity]
+    notes: "Deep-extracted into manufacturing_productivity sensitivity (icct_jobs_per_gwh.csv): integrated cells+modules+packs 95 jobs/GWh average (median 90, range 60-165); modules+packs 52 (median 50, range 35-70); cells+modules 45; packs only 22; modules only 20; cells only 50; cathode 15 (range 10-24); anode 10; electrolyte 4; separator 3; battery recycling 17 average (median 19, range 6-27). Cell components + recycling total 49 jobs/GWh. Combined with pack production: ~144 jobs/GWh for a fully integrated facility — narrower scope than upjohn_naatbatt_2023's 318.5 jobs/GWh (which includes upstream/R&D/service/equipment/distribution)."
+    credibility:
+      tier: 4
+      rationale: "ICCT is a reputable independent research organization with strong technical expertise; published as a working paper with clear methodology"
+
+  - id: researchgate_electrode_defects_review
+    name: "Impact of Electrode Defects on Battery Cell Performance: A Review (ResearchGate)"
+    description: "Peer-reviewed academic review on electrode defect propagation and quality-control implications"
+    provided: true
+    processed: false
+    raw_file: "data/raw/researchgate_electrode_defects_review.pdf"
+    url: "https://www.researchgate.net/publication/362716849_Impact_of_Electrode_Defects_on_Battery_Cell_Performance_A_Review"
+    source_type: "peer-reviewed academic review article"
+    sensitivities: [manufacturing_productivity]
+    notes: "Full 18-page review (Fraunhofer IKTS / TU Dresden). Documents that ~39% of cell-assembly cost traces to electrode-production quality; defects propagate through the full line. Notes a gap in quantitative tolerance criteria, implying demand for skilled quality engineers to operationalize inline QA at scale."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed academic publication with technical focus on manufacturing quality control"
+
+  - id: sciencedirect_battery_defects_article
+    name: "Battery Defects Article (ScienceDirect)"
+    description: "Peer-reviewed journal article on quality and maintenance roles as defect prevention"
+    provided: true
+    processed: false
+    raw_file: "data/raw/sciencedirect_battery_defects_article.pdf"
+    url: "https://www.sciencedirect.com/science/article/abs/pii/S0378775323013319"
+    source_type: "peer-reviewed academic journal article"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Full article (Oak Ridge/Argonne-affiliated). Scrap rates 5-30% depending on maturity phase (highest during ramp-up), costing $billions annually; coating process identified as primary defect source. Data-driven process optimization is the key lever for scrap reduction, shifting workforce toward quality/process-data roles."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed academic publication in battery science; technical focus on quality management"
+
+  - id: wiley_traceability_integration
+    name: "Traceability Integration in Battery Manufacturing (Wiley)"
+    description: "Peer-reviewed article (Wessel, 2022, Energy Tech) on traceability systems and advanced quality roles in battery cell manufacturing"
+    provided: true
+    processed: false
+    raw_file: "data/raw/wiley_traceability_integration.pdf"
+    url: "https://onlinelibrary.wiley.com/doi/abs/10.1002/ente.202200911"
+    source_type: "peer-reviewed academic journal article"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Full 15-page article documenting a traceability system piloted at the Battery LabFactory Braunschweig, combining continuous marking and feature-based identification for electrode-sheet-level data allocation. Virtual quality gates and six-sigma process adjustment shift workforce demand from reactive inspection toward proactive data interpretation/process optimization; coating remains the process bottleneck."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed academic publication; technical focus on quality control and traceability systems"
+
+  - id: columbia_sipa_ira_battery_supply_chain
+    name: "Columbia SIPA Center on Global Energy Policy (CGEP) — The IRA and the US Battery Supply Chain, One Year On"
+    description: "Policy analysis of IRA-driven battery investment distribution, regional concentration, and cost impact"
+    provided: true
+    processed: false
+    raw_file: "data/raw/columbia_sipa_ira_battery_supply_chain.md"
+    url: "https://www.energypolicy.columbia.edu/publications/the-ira-and-the-us-battery-supply-chain-one-year-on/"
+    source_type: "academic policy center publication"
+    sensitivities: [policy_scenarios, market_share]
+    notes: "Authors: Ahmed Mehdi, Tom Moerenhout (Sept 2023). Key finding: ~80% of IRA-driven investment in Republican-leaning states (SC, GA, MI, OH); US capex ~$90M/GWh vs China ~$60M/GWh."
+    credibility:
+      tier: 3
+      rationale: "Columbia University-affiliated policy research center; quantitative data drawn from government filings and press releases"
+
+  - id: gigafactory_role_composition
+    name: "Role Composition in Gigafactories (internal research doc)"
+    description: "Internal synthesis of gigafactory workforce structure across engineering, operations, facilities, supply chain, and administration"
+    provided: true
+    processed: false
+    raw_file: "data/raw/gigafactory_role_composition.md"
+    url: "https://docs.google.com/document/d/1P9MN7fEi_jkFxb0lGM9dNgmk8YRGKIJQ/edit"
+    source_type: "internal research synthesis document"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Typical gigafactory: 2,000-5,000 direct manufacturing jobs. Documents high-demand roles (electrical/manufacturing/automation engineers, QA, process engineers). Synthesizes other public sources (WSP, BCG, Porsche Consulting, Tesla careers pages) — claims should be cross-referenced to those primary sources."
+    credibility:
+      tier: 6
+      rationale: "Internal synthesis of publicly available sources; useful for workforce composition structure but not primary evidence"
+
+  - id: rampup_steady_state_labor
+    name: "Ramp-up vs. Steady-state Labor Needs (internal research doc)"
+    description: "Labor intensity dynamics across the factory lifecycle: ramp-up (high labor multiplier, high scrap) vs. steady-state (lean, automation-driven)"
+    provided: true
+    processed: false
+    raw_file: "data/raw/rampup_steady_state_labor.md"
+    url: "https://docs.google.com/document/d/1PSRMDJ-36uYcUWT2NRpKN8WNz-TQtEt0/edit"
+    source_type: "internal research synthesis document"
+    sensitivities: [manufacturing_productivity]
+    notes: "Core document for View A (labor intensity curve). Ramp-up: ~10x labor multiplier, scrap >30%. Steady-state: scrap drops to 5-12%, shift toward predictive maintenance and automation oversight. Synthesizes academic/industry sources (Fraunhofer, BCG, Porsche, Siemens) — claims should be verified against primary sources."
+    credibility:
+      tier: 6
+      rationale: "Internal synthesis of academic and industry sources; useful narrative framework but not primary evidence"
+
+  - id: deloitte_future_of_work_manufacturing
+    name: "Deloitte — The Future of Work: Manufacturing Jobs in the Digital Era"
+    description: "Manufacturing workforce transformation, skills-gap projections, and future job roles in Industry 4.0"
+    provided: true
+    processed: false
+    raw_file: "data/raw/deloitte_future_of_work_manufacturing.md"
+    url: "https://www.deloitte.com/us/en/insights/industry/manufacturing-industrial-products/future-of-work-manufacturing-jobs-in-digital-era.html"
+    source_type: "consultancy insights/research article"
+    sensitivities: [automation, manufacturing_productivity]
+    notes: "Co-cited with manufacturingdive_labor_shortage_2024, amtec_manufacturing_workforce_report, manufacturingtomorrow_worker_shortage_2026 for the 'workforce demand remains substantial despite automation' claim. Projects 2M+ job shortfall by 2030s; introduces ten future manufacturing personas."
+    credibility:
+      tier: 4
+      rationale: "Major global consultancy with manufacturing expertise; research-backed claims cited across industry sources"
+
+  - id: manufacturingdive_labor_shortage_2024
+    name: "Manufacturing Dive — Manufacturing Labor Shortage 2033 (Deloitte/MI Report, 2024)"
+    description: "Trade press reporting on Deloitte/Manufacturing Institute workforce projections: 3.8M new workers needed by 2033, 1.9M unfilled"
+    provided: true
+    processed: false
+    raw_file: "data/raw/manufacturingdive_labor_shortage_2024.md"
+    url: "https://www.manufacturingdive.com/news/manufacturing-labor-shortage-2033-deloitte-mi-report-2024/713133/"
+    source_type: "trade press article"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Co-cited with deloitte_future_of_work_manufacturing. Baseline: 13M manufacturing workers (Jan 2024), 393k facilities. Maintenance technician roles projected +16% by 2032; education mismatch noted."
+    credibility:
+      tier: 5
+      rationale: "Quality trade press with named data sources and projections from a reputable research organization"
+
+  - id: electrek_battery_belt_2022
+    name: "Electrek — US EV Battery Belt (2022)"
+    description: "Geographic clustering and investment scale of North American battery manufacturing: $40B+ since 2021, 5x capacity growth 2021-2026"
+    provided: true
+    processed: false
+    raw_file: "data/raw/electrek_battery_belt_2022.md"
+    url: "https://electrek.co/2022/10/13/us-ev-battery-belt/"
+    source_type: "trade/tech press article"
+    sensitivities: [market_share]
+    notes: "Battery Belt clusters Midwest/South plus CA/TX; 15+ new gigafactories since 2021, mostly >10 GWh. Cites Federal Reserve Dallas and Benchmark Mineral Intelligence as data sources."
+    credibility:
+      tier: 5
+      rationale: "Technology/EV trade publication with verified data sources and company announcements"
+
+  - id: siteselection_georgia_quickstart
+    name: "Site Selection Magazine — Georgia Supercharges Growth Through Worker Training"
+    description: "Georgia Quick Start program effectiveness in attracting battery manufacturing; training as a decisive site-selection factor"
+    provided: true
+    processed: false
+    raw_file: "data/raw/siteselection_georgia_quickstart.md"
+    url: "https://siteselection.com/georgia-supercharges-growth-through-worker-training/"
+    source_type: "trade press / economic development journalism"
+    sensitivities: [policy_scenarios, manufacturing_productivity]
+    notes: "Quick Start ranked #1 state training program for 13 years. SK Battery America: $1.67B investment, 2,600 jobs, ahead of schedule. Training cited as decisive over larger cash incentives for Hyundai. Cross-ref Stage-5 claim REGION-04."
+    credibility:
+      tier: 5
+      rationale: "Reputable economic development trade publication with on-the-record sources and verified company data"
+
+  - id: ajc_georgia_hyundai_sk_incentives
+    name: "Atlanta Journal-Constitution — Georgia's Incentives for the Hyundai-SK EV Battery Plant"
+    description: "Georgia's ~$697M incentive package for the Hyundai-SK cell joint venture: tax abatement, training, infrastructure"
+    provided: true
+    processed: false
+    raw_file: "data/raw/ajc_georgia_hyundai_sk_incentives.pdf"
+    url: "https://www.ajc.com/news/georgia-offered-700m-in-incentives-to-woo-sk-hyundai-ev-battery-plant/EO6SLED67RDEHPMXA7OLRR5QI4/"
+    source_type: "regional newspaper journalism"
+    sensitivities: [policy_scenarios, market_share]
+    notes: "SK On + Hyundai Motor Group, Bartow County, GA. Total package ~$697.4M (property tax abatement, megaproject credits, water/REBA/Quick Start training/infrastructure); 3,750+ jobs at ~$53k avg; $11M Georgia Quick Start training fund. Georgia has attracted 40+ EV projects since 2020."
+    credibility:
+      tier: 5
+      rationale: "Major regional newspaper with access to state/local incentive disclosures and economic development data"
+
+  - id: tennesseelookout_blueoval_city
+    name: "Tennessee Lookout — What to Know: The New Ford BlueOval City Plant"
+    description: "Ford BlueOval City workforce investment in West Tennessee: ~$900M incentives including $40M TCAT Stanton training campus"
+    provided: true
+    processed: false
+    raw_file: "data/raw/tennesseelookout_blueoval_city.pdf"
+    url: "https://tennesseelookout.com/2024/09/13/what-to-know-the-new-ford-blueoval-city-plant-poised-to-reshape-west-tennessee/"
+    source_type: "nonprofit/state-focused news outlet journalism"
+    sensitivities: [policy_scenarios, manufacturing_productivity]
+    notes: "~$900M incentive package: $40M TCAT Stanton college campus (opened June 2024) + $21M additional workforce training; 5,800 direct jobs target with a 90% compliance threshold triggering clawbacks; backed by a federal DOE $9.2B loan; BlueOval Learning STEM partnerships. Tied to a 2021 state agreement."
+    credibility:
+      tier: 5
+      rationale: "Tennessee-focused nonprofit news outlet with access to state economic development and labor data"
+
+  - id: amtec_manufacturing_workforce_report
+    name: "AmTec — Manufacturing Workforce Report (blog)"
+    description: "Staffing firm analysis of U.S. manufacturing workforce trends, skills gaps, and labor availability metrics (2025-2026)"
+    provided: true
+    processed: false
+    raw_file: "data/raw/amtec_manufacturing_workforce_report.md"
+    url: "https://www.amtec.us.com/blog/manufacturing-workforce-report"
+    source_type: "staffing-company blog"
+    sensitivities: [automation, manufacturing_productivity]
+    notes: "Co-cited with deloitte_future_of_work_manufacturing for the 'workforce demand remains substantial despite automation' claim. Metrics: 4.1% unfilled roles, 440k-510k openings, $30.10/hr baseline; emphasizes skills-based scarcity over raw headcount shortage."
+    credibility:
+      tier: 7
+      rationale: "Staffing firm promotional content with industry aggregation; limited primary research rigor but useful for practitioner perspective on skills-gap trends"
+
+  - id: manufacturingtomorrow_worker_shortage_2026
+    name: "Manufacturing Tomorrow — Data Reveals US Manufacturing Faces a 2 Million Worker Shortage (2026)"
+    description: "Trade press reporting on MIE Solutions 2026 analysis of the U.S. manufacturing labor gap, regional disparities, and job-posting intensity"
+    provided: true
+    processed: false
+    raw_file: "data/raw/manufacturingtomorrow_worker_shortage_2026.md"
+    url: "https://www.manufacturingtomorrow.com/news/2026/03/10/data-reveals-us-manufacturing-faces-a-2-million-worker-shortage/27163/"
+    source_type: "trade press / industry news site"
+    sensitivities: [manufacturing_productivity, market_share]
+    notes: "Co-cited with deloitte_future_of_work_manufacturing. Projects 1.5-2M vacant positions by early 2030s; 26% of current workforce eligible for retirement; PMI contracted 10 months straight."
+    credibility:
+      tier: 5
+      rationale: "Trade press outlet reporting on third-party research with named sources and quantitative claims, but aggregates rather than produces primary research"
+
+  - id: linkedin_chinese_gigafactory_scrap
+    name: "LinkedIn Pulse — Chinese Gigafactories Run Under 10% Scrap vs Western Plants (Jha)"
+    description: "Practitioner analysis of scrap-rate disparities between Chinese (sub-10%) and Western (20-40%) gigafactories"
+    provided: true
+    processed: false
+    raw_file: "data/raw/linkedin_chinese_gigafactory_scrap.pdf"
+    url: "https://www.linkedin.com/pulse/chinese-gigafactories-run-under-10-scrap-western-plants-jha-xvd9c"
+    source_type: "individual practitioner LinkedIn article"
+    sensitivities: [automation, manufacturing_productivity, policy_scenarios]
+    notes: "Full 11-page article (cites Fraunhofer, RWTH, IEA, Stanford FSI). Economic impact estimate: ~EUR30k/day per percentage-point scrap, ~EUR900k/day at 30% rate. ~70 employees/GWh cited. Frames the scrap-rate gap as a knowledge/process-maturity problem (15+ years of accumulated learning in China) rather than labor cost or automation, implying sustained skilled-workforce demand during long Western ramp-ups. Jointly sourced with mckinsey_research for the scrap-rate claim."
+    credibility:
+      tier: 6
+      rationale: "Practitioner commentary with technical depth; individual-author perspective without formal peer review"
+
+  - id: p3group_predictive_maintenance
+    name: "P3 Group — Predictive Maintenance in Cell Manufacturing (blog)"
+    description: "Consulting firm whitepaper landing page on predictive maintenance strategies for lithium-ion cell production"
+    provided: true
+    processed: false
+    raw_file: "data/raw/p3group_predictive_maintenance.md"
+    url: "https://www.p3-group.com/en/p3-updates/predictive-maintenance-in-cell-manufacturing/"
+    source_type: "consulting-company blog / whitepaper landing page"
+    sensitivities: [automation, manufacturing_productivity]
+    notes: "Landing page (data/raw/p3group_predictive_maintenance.md) plus supplemental full whitepaper (data/raw/p3group_predictive_maintenance_whitepaper.pdf, Kreilinger thesis). Highlights maintenance skill-mix shift toward mechanical + predictive expertise, field service/applications engineers bridging the floor-to-technology knowledge gap, service-technician resource planning, and cross-functional troubleshooting upskilling as a workforce-development bottleneck."
+    credibility:
+      tier: 6
+      rationale: "Consulting firm whitepaper marketing material; legitimate technical topic but promotional framing"
+
+  - id: batterynews_workforce_development_2026
+    name: "Battery-News.de — Battery Training and Workforce Development in North America (2026)"
+    description: "Niche battery-industry outlet coverage of workforce training initiatives in North America"
+    provided: true
+    processed: false
+    raw_file: "data/raw/batterynews_workforce_development_2026.md"
+    url: "https://battery-news.de/en/2026/02/06/battery-training-and-workforce-development-in-north-america/"
+    source_type: "niche industry trade press"
+    sensitivities: [policy_scenarios, manufacturing_productivity]
+    notes: "Produced in collaboration with Volta Foundation's Battery Report. Surveys fragmented training ecosystem (national labs, associations, universities, regional programs) tied to gigafactory scaling; no quantitative training-capacity data."
+    credibility:
+      tier: 5
+      rationale: "Niche battery-focused trade outlet; reporting on workforce development with limited primary data but useful for ecosystem mapping"
+
+  - id: mckinsey_hidden_trends_regional_analysis
+    name: "McKinsey — The hidden trends in battery supply and demand: A regional analysis"
+    description: "Regional battery supply-demand imbalances (2025-2030) with GWh capacity by region; IRA policy impact on North America undersupply-to-oversupply transition"
+    provided: true
+    processed: false
+    raw_file: "data/raw/mckinsey_hidden_trends_regional_analysis.pdf"
+    url: "https://www.mckinsey.com/en/industries/automotive-and-assembly/our-insights/the-hidden-trends-in-battery-supply-and-demand-a-regional-analysis"
+    source_type: "management consultancy research article"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Regional supply-demand model (base case: 1,970 GWh demand 2025 -> 3,910 GWh 2030). China persistent oversupply; Europe ~70 GWh undersupply; North America 50 GWh undersupply (2025) -> oversupply (2030) conditional on IRA; RoW undersupply 80->300 GWh. LFP/LMFP chemistry undersupply in North America/Europe vs. Chinese dominance. Distinct from the mckinsey_research entry (a different McKinsey article, 'Battery 2035: Building New Advantages')."
+    credibility:
+      tier: 4
+      rationale: "McKinsey Automotive & Assembly Practice; bottom-up modeling of announced capacity and company production-likelihood scoring, with demand projections from government/industry forecasts (Argonne, BloombergNEF)"
+
+  - id: doe_four_year_battery_supply_chain_review
+    name: "U.S. Department of Energy — 2021-2024 Four-Year Review of Supply Chains for the Advanced Batteries Sector"
+    description: "Federal assessment of U.S. battery supply-chain investment (>$150B), capacity (>1,100 GWh), job creation (100k+), and workforce constraints; IRA/Section 301 policy drivers (December 2024)"
+    provided: true
+    processed: false
+    raw_file: "data/raw/doe_four_year_battery_supply_chain_review.pdf"
+    url: "https://www.energy.gov/sites/default/files/2024-12/2021-2024%20Four%20Year%20Review%20of%20Supply%20Chains%20for%20the%20Advanced%20Batteries%20Sector.pdf"
+    source_type: "official government report"
+    sensitivities: [market_share, policy_scenarios, manufacturing_productivity, automation]
+    notes: ">$150B private + ~$33B federal investment (2021-2024) -> >100k jobs. U.S. cell capacity >1,100 GWh/year (11-17M EV supply). Workforce bottleneck cited in construction trades (welders, pipefitters, electricians) and skilled manufacturing labor. Capex cost 2-7x higher than PRC. IRA 45X/48C/30D incentives; Section 301 25% tariffs on PRC batteries. Battery deployment projected to grow 6x (2024-2035). Cites Argonne's Battery Workforce Challenge."
+    credibility:
+      tier: 1
+      rationale: "U.S. Department of Energy official report; federal investment-tracking database (energy.gov/invest), Argonne National Lab data, and interagency coordination (Treasury, Commerce, State, Interior, DoD) as primary sources for U.S. capacity and job-creation figures"
+
+  - id: bls_naics_33591
+    name: "U.S. Bureau of Labor Statistics — NAICS 33591 (Battery Manufacturing) Employment"
+    description: "Official BLS employment data for battery manufacturing facilities (NAICS 33591); includes non-Li-ion and charger manufacturing"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.bls.gov/web/empsit/ceseeb1a.htm"
+    source_type: "government statistical agency"
+    sensitivities: [manufacturing_productivity]
+    notes: "May 2026 SA preliminary: 60,400 workers. Includes non-Li-ion and some charger manufacturing. NAICS code 33591 is the broadest official employment benchmark. Cross-ref Stage-5 claim UNDR-02."
+    credibility:
+      tier: 1
+      rationale: "Official U.S. Bureau of Labor Statistics publication"
+
+  - id: nevada_goed_fy24
+    name: "Nevada Governor's Office of Economic Development — Tesla Gigafactory Nevada FY24 Annual Report"
+    description: "State economic development agency report on Giga Nevada employment and multiplier effects"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://goed.nv.gov/wp-content/uploads/2024/10/NRS-360.975-3.5B-Tesla-1-Annual-Report-FY24.pdf"
+    source_type: "state government economic report"
+    sensitivities: [manufacturing_productivity, policy_scenarios]
+    notes: "~2.2x employment multiplier; Giga Nevada headcount and regional employment impact. Cross-ref Stage-5 claims UNDR-03, ROLE-02."
+    credibility:
+      tier: 1
+      rationale: "Official Nevada state government economic development agency"
+
+  - id: iea_wee_2025
+    name: "International Energy Agency — World Energy Employment 2025"
+    description: "IEA analysis of global employment in energy sectors; includes combined EV + battery manufacturing data"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.iea.org/reports/world-energy-employment-2025"
+    source_type: "international government agency report"
+    sensitivities: [market_share]
+    notes: "EV+battery employment combined, no GWh denominator. Cross-ref Stage-5 claims POLICY-03, SCOPE-01."
+    credibility:
+      tier: 1
+      rationale: "International Energy Agency official publication"
+
+  - id: iea_gevo_2025
+    name: "International Energy Agency — Global EV Outlook 2025"
+    description: "IEA's comprehensive EV and battery demand outlook with STEPS global scenario"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.iea.org/reports/global-ev-outlook-2025"
+    source_type: "international government agency report"
+    sensitivities: [market_share]
+    notes: "STEPS global demand scenario for GWh projections. Cross-ref Stage-5 claims SCEN-GLOBAL-WF, DEMAND-01."
+    credibility:
+      tier: 1
+      rationale: "International Energy Agency official publication"
+
+  - id: iea_capacity_utilization_2022
+    name: "International Energy Agency — Capacity Utilization in Battery Manufacturing (2022)"
+    description: "IEA analysis of nameplate vs. actual capacity utilization rates in global battery plants"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.iea.org/"
+    source_type: "international government agency report"
+    sensitivities: [manufacturing_productivity]
+    notes: "Average ~43% capacity utilization (2022). Nameplate-vs-utilized anchor for denominator definitions. Cross-ref Stage-5 claim NEW-02."
+    credibility:
+      tier: 1
+      rationale: "International Energy Agency official analysis"
+
+  - id: nrel_cemac
+    name: "NREL — Clean Energy Manufacturing Analysis Center (CEMAC) Battery Manufacturing Benchmarks"
+    description: "NREL technical analysis of capacity and value-added in battery manufacturing; employment explicitly excluded from scope"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.nrel.gov/"
+    source_type: "national laboratory technical report"
+    sensitivities: [manufacturing_productivity]
+    notes: "Benchmarks capacity/value-added; employment explicitly EXCLUDED from analysis. Flag 2017 publication date. Cross-ref Stage-5 claim POLICY-03."
+    credibility:
+      tier: 1
+      rationale: "National Renewable Energy Laboratory official technical analysis"
+
+  - id: faraday_gigafactory
+    name: "Faraday Institution — UK Gigafactory Workforce Analysis"
+    description: "UK-based research on gigafactory workforce scaling; 180 workers/GWh with role split (design, implement, operate, support)"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.faraday.ac.uk/"
+    source_type: "research institution report"
+    sensitivities: [manufacturing_productivity]
+    notes: "UK gigafactory 180 w/GWh; role split 50/30/10/9/1 (design/implement/operate/support/other). Cross-ref Stage-5 claims ROLE-01, QUANT-HEADLINE, POLICY-03."
+    credibility:
+      tier: 2
+      rationale: "UK battery research institution (Faraday Institution) with direct access to industrial partnerships"
+
+  - id: catl_disclosures
+    name: "CATL — Company Disclosures on Na-ion Battery Engineering"
+    description: "CATL public statements on sodium-ion chemistry challenges and manufacturing complexity"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.catl.com/en/"
+    source_type: "company disclosure"
+    sensitivities: [energy_density, manufacturing_productivity]
+    notes: "Na-ion 100+ engineering challenges; total headcount only (no GWh denominator). Cross-ref Stage-5 claims AUTO-03, ROLE-03."
+    credibility:
+      tier: 2
+      rationale: "Company primary disclosure; specific technical claims require independent verification"
+
+  - id: cell_labor_intensity_dataset_2026
+    name: "Volta Foundation — Cell Labor Intensity Dataset (40-facility aggregation)"
+    description: "Aggregated labor-intensity data from 40 battery cell manufacturing facilities globally, with tier classification and confidence scores"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "not archived: catalogued from Stage 2-5 research package"
+    source_type: "research compilation"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "40-facility aggregation; nameplate denominator; band separation steady 72-87 vs ramp 125-188 w/GWh. Cross-ref Stage-5 claims ROLE-02, QUANT-MATURITY-CURVE."
+    credibility:
+      tier: "mixed"
+      rationale: "Per-row credibility indicated in CSV; facilities range from Tier 1 government data to Tier 4-6 company disclosures and media reports"
+
+  - id: battery_labor_intensity_study
+    name: "Volta Foundation — Battery Labor Intensity Study (anchored-logistic curve fit)"
+    description: "PRIMARY basis for View A (workers/GWh vs years-since-start) and the 149 base in View B: an anchored four-parameter logistic fit of cell-manufacturing labor intensity decay across four gigafactories (LGES Poland, LGES Michigan, PENA Nevada, CATL global)."
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/battery_labor_intensity_study/"
+    url: "not archived: internal Volta modeling package (gitignored under research/model_inputs/)"
+    source_type: "internal derived analysis (curve fit over primary gigafactory disclosures)"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Volta's own modeling study (see FINDINGS.md in the package). Model: WPV(x)=a/(1+exp(-b(x-c)))+WPV0 with WPV0 enforcing WPV(0)=1000 (the 1,000 w/GWh startup level is an enforced anchor, NOT an observation), leaving 3 free params (a,b,c). Fit three ways: per-plant (v5b), pooled equal-per-observation (v6, floor 137.8 w/GWh), pooled equal-per-plant (v7, floor 148.5 w/GWh). RECOMMENDED reporting: mature-floor sensitivity band 138-149 w/GWh; the spread is entirely 'how much should Poland (the low-floor outlier at ~86, and the best-sampled plant) count' — v6 weights by observation count, v7 caps each plant at weight 1. Lead with v7 (148.5) for 'typical plant' framing -> this is the 149 base used in global_jobs.json (base_workers_per_gwh); cite v6 (138) only for the narrow 'average across observations' claim. Shared shape: steep first-year decline (inflection ~0.7-0.8 yr) settling to the mature floor by ~year 3-4. The View A dashboard plots the v7 anchored-logistic curve (solid, floor 148.5) with v6 (dashed, floor 137.8); the published sigmoid params are emitted by scripts/generate_dashboard_data.py (study_characteristic_curve) so they survive regeneration. Underlying per-plant observations live in data/processed/sensitivities/manufacturing_productivity/labor_intensity_benchmarks.csv (source_id column = battery_labor_intensity_study). CAVEATS: Michigan & PENA have 2 obs vs 3 params (DOF=-1) so their per-plant params are illustrative, not estimates; descriptive not predictive (do not extrapolate beyond observed window); a hierarchical/random-effects fit is the statistically ideal version but is infeasible with 4 clusters of 2-4 points. DISTINCT from cell_labor_intensity_dataset_2026 (a separate 40-facility band-separation compilation, steady-state 72-87 w/GWh on a nameplate denominator) and from ev_labor_intensity_study (assembly tier, not cell)."
+    credibility:
+      tier: 3
+      rationale: "Internal Volta analysis with fully documented, reproducible methodology (deterministic fit_all.py) built on primary gigafactory disclosures; transparent about its own limitations (small n, two-point underdetermination, anchor-as-constraint), but not peer-reviewed and based on only four plants"
+
+  - id: lges_wroclaw
+    name: "LG Energy Solution — Wroclaw Facility Labor Intensity (public data)"
+    description: "Labor intensity progression for LGES Wroclaw facility: 464 workers/GWh ramp to 81 steady-state"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://lgensol.pl/en/"
+    source_type: "company public disclosure"
+    sensitivities: [manufacturing_productivity]
+    notes: "Ramp 464 -> 81 w/GWh two-point series. Cross-ref Stage-5 claim ROLE-02."
+    credibility:
+      tier: 2
+      rationale: "Company primary source; figures derived from public employment and production disclosures"
+
+  - id: upjohn_local_job_multipliers_2019
+    name: "W.E. Upjohn Institute — Local Job Multipliers in Manufacturing (2019)"
+    description: "Academic research on input-output multiplier overestimation in manufacturing impact studies"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://research.upjohn.org/cgi/viewcontent.cgi?article=1319&context=up_workingpapers"
+    source_type: "academic research paper"
+    sensitivities: [manufacturing_productivity, policy_scenarios]
+    notes: "I-O models overstate multipliers 25-33%. Flag 2019 durable goods context. Cross-ref Stage-5 claim UNDR-03."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed academic research from W.E. Upjohn Institute; methodology transparent and reproducible"
+
+  - id: argonne_batpac
+    name: "Argonne National Laboratory — BatPAC Model (cited via ICCT)"
+    description: "Argonne's battery manufacturing cost and labor model; ~68 workers/GWh cells-only"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://theicct.org/wp-content/uploads/2024/12/ID-255-%E2%80%93-Battery-jobs_working-paper_final.pdf"
+    source_type: "national laboratory technical model"
+    sensitivities: [manufacturing_productivity]
+    notes: "~68 w/GWh cells-only. Flag 2019 publication date. Cross-ref Stage-5 claim QUANT-MATURITY-CURVE."
+    credibility:
+      tier: 3
+      rationale: "Argonne National Laboratory official technical model; cited via ICCT peer-reviewed analysis"
+
+  - id: fev_consulting
+    name: "FEV Consulting — Battery Manufacturing Labor Analysis (2023)"
+    description: "Consulting firm bottom-up labor analysis for battery cell manufacturing; ~64 workers/GWh"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://theicct.org/wp-content/uploads/2024/12/ID-255-%E2%80%93-Battery-jobs_working-paper_final.pdf"
+    source_type: "consulting firm analysis"
+    sensitivities: [manufacturing_productivity]
+    notes: "~64 w/GWh cells-only bottom-up. Flag 2023 publication date. Cross-ref Stage-5 claim QUANT-MATURITY-CURVE."
+    credibility:
+      tier: 3
+      rationale: "Consulting firm technical analysis; cited via ICCT peer-reviewed working paper"
+
+  - id: cotterman_fuchs_2024
+    name: "Cotterman & Fuchs (2024) — Labor Hours in Battery Cell Manufacturing"
+    description: "2024 peer-reviewed analysis of labor-hour requirements for lithium-ion cell production"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.sciencedirect.com/"
+    source_type: "peer-reviewed journal article"
+    sensitivities: [manufacturing_productivity]
+    notes: "14-22 labor-hours/GWh (cell tier). Cross-ref Stage-5 claim QUANT-HEADLINE context."
+    credibility:
+      tier: 3
+      rationale: "Peer-reviewed scientific publication"
+
+  - id: mckinsey_demand_outlook_2025
+    name: "McKinsey — Battery Demand Outlook 2025"
+    description: "McKinsey demand scenario modeling; fading-momentum case projects ~3,300 GWh floor by 2030-2035"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.mckinsey.com/industries/automotive-and-assembly/our-insights"
+    source_type: "management consultancy research article"
+    sensitivities: [market_share]
+    notes: "Fading-momentum ~3,300 GWh floor (Oct 2025). Cross-ref Stage-5 claims DEMAND-01, SCEN-02."
+    credibility:
+      tier: 4
+      rationale: "McKinsey Automotive Practice; scenario modeling with transparent assumptions"
+
+  - id: cru_ritchie_china_intensity
+    name: "CRU / Hannah Ritchie — China Battery Manufacturing Intensity"
+    description: "Analysis comparing labor intensity: BYD ~50 workers/GWh vs US ~315 (6x spread)"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://hannahritchie.substack.com/p/china-cheap-solar-batteries"
+    source_type: "market research / analyst commentary"
+    sensitivities: [automation]
+    notes: "BYD ~50 vs US ~315 w/GWh (~6x spread). Cross-ref Stage-5 claims AUTO-01, NEW-03."
+    credibility:
+      tier: 4
+      rationale: "Market research analyst commentary with referenced data; specific facility comparisons require independent verification"
+
+  - id: bcg_battery_cost_2025
+    name: "Boston Consulting Group — Battery Manufacturing Cost Reduction (2025)"
+    description: "BCG analysis of cost reduction levers and labor-share differences across regions"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.bcg.com/"
+    source_type: "management consultancy research article"
+    sensitivities: [automation]
+    notes: "Conversion cost 20-30% reducible; labor share US/EU higher than China. Cross-ref Stage-5 claim AUTO-01."
+    credibility:
+      tier: 4
+      rationale: "BCG Manufacturing Practice; confidential client data aggregated"
+
+  - id: wmg_cell_manufacturing
+    name: "WMG — Cell Manufacturing Future-State Analysis"
+    description: "University of Warwick Manufacturing Group analysis of future workforce distribution in cell manufacturing"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://iuk-business-connect.org.uk/wp-content/uploads/2025/01/WMG-Cell-Manufacturing-Findings-Report.pdf"
+    source_type: "academic research report"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Future-state Design 8%->30%, Implement 50%->21%. Cross-ref Stage-5 claims ROLE-01, ROLE-03."
+    credibility:
+      tier: 4
+      rationale: "University of Warwick Manufacturing Group academic research; industry partnership study"
+
+  - id: irec_jobs_census_2025
+    name: "Interstate Renewable Energy Council — Jobs Census (2025)"
+    description: "IREC survey of employment across clean energy sectors; battery storage construction = 52.3% of battery-storage jobs"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://irecusa.org/census-jobs-in-other-clean-energy-industries/"
+    source_type: "industry association survey"
+    sensitivities: [manufacturing_productivity]
+    notes: "Construction = 52.3% of battery-storage jobs (DY2024). Cross-ref Stage-5 claims SCOPE-04, UNDR-01."
+    credibility:
+      tier: 4
+      rationale: "Industry association survey with methodological transparency"
+
+  - id: csis_new_phase_2026
+    name: "Center for Strategic and International Studies — New Phase of US Battery Industry (2026)"
+    description: "CSIS analysis of US battery manufacturing capacity, policy risk, and 2025 investment churn"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.csis.org/analysis/new-phase-us-battery-industry"
+    source_type: "think tank policy analysis"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "US ~5% cell capacity; 29-72% closure risk; 2025 cancellations $11B > announcements $8B. Cross-ref Stage-5 claims SCEN-02, NEW-04."
+    credibility:
+      tier: 4
+      rationale: "CSIS is a reputable independent think tank; claims based on facility-level announcements and public disclosures"
+
+  - id: sia_atreg_semiconductor
+    name: "Semiconductor Industry Association — US Semiconductor Industry Workforce Report (2023)"
+    description: "SIA report on semiconductor industry workforce gaps; 67k US worker shortage (analog reference)"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://atreg.com/sia-2024-state-of-the-us-semiconductor-industry-report/"
+    source_type: "industry association report"
+    sensitivities: [manufacturing_productivity]
+    notes: "67k US semiconductor gap (figure Jul 2023). Flag stale. Cross-ref Stage-5 claim ANALOG-01."
+    credibility:
+      tier: 4
+      rationale: "Industry association report; semiconductor analog for manufacturing workforce gaps"
+
+  - id: pcimag_dry_electrode
+    name: "PCI Magazine — Dry Electrode Coating Process Technologies"
+    description: "Trade article on wet vs. dry electrode coating; dry process eliminates drying ovens and reduces labor"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.pcimag.com/articles/114539-wet-vs-dry-electrode-coating-evaluating-process-tradeoffs-in-lithium-ion-battery-manufacturing"
+    source_type: "trade press article"
+    sensitivities: [energy_density, automation]
+    notes: "Dry-electrode eliminates drying ovens; materially cuts electrode-stage labor. Cross-ref Stage-5 claims AUTO-02, NEW-06."
+    credibility:
+      tier: 5
+      rationale: "Trade press coverage of process technology; technical claims based on published literature"
+
+  - id: ford_authority_blueoval
+    name: "Ford Authority — BlueOval City Construction Completion"
+    description: "News coverage of Ford BlueOval City project completion and market delays"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://fordauthority.com/2025/09/ford-blueoval-city-construction-completed-despite-ev-pickup-delay/"
+    source_type: "automotive enthusiast / news blog"
+    sensitivities: [policy_scenarios]
+    notes: "BlueOval City finished on schedule; delays market-driven. Cross-ref Stage-5 claim REGION-03."
+    credibility:
+      tier: 5
+      rationale: "Automotive enthusiast blog; reports on public announcements and news sources"
+
+  - id: limiting_factor_naion
+    name: "Limiting Factor — CATL Na-ion Battery Manufacturing"
+    description: "Technical video analysis of CATL sodium-ion battery manufacturing; 100+ engineering challenges vs. solid-state labor intensity"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.youtube.com/watch?v=qvCAwdNB6Aw"
+    source_type: "YouTube technical analysis"
+    sensitivities: [energy_density]
+    notes: "CATL Na-ion 100+ challenges; solid-state more labor-intensive. Cross-ref Stage-5 claims AUTO-03, NEW-07."
+    credibility:
+      tier: 6
+      rationale: "Expert commentary on technical videos; independent technical analysis without formal peer review"
+
+  - id: voit_power_siting
+    name: "Voit Co. — Access to Power in Industrial Site Selection (2025)"
+    description: "Site selection consultancy analysis ranking power access as #1 industrial siting criterion"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://voitco.com/access-to-power-the-new-priority-for-industrial-site-selection/"
+    source_type: "consulting firm commentary"
+    sensitivities: [policy_scenarios, market_share]
+    notes: "Power access = #1 industrial siting criterion. Cross-ref Stage-5 claims REGION-01, NEW-08."
+    credibility:
+      tier: 6
+      rationale: "Site selection consulting firm; practitioner perspective based on client engagements"
+
+  - id: millerchevalier_obbba_45x
+    name: "Miller & Chevalier — IRA §45X Changes Under OBBBA (2025)"
+    description: "Law firm analysis of battery manufacturing credit changes under Omnibus Battery Manufacturing and Recycling Act"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.millerchevalier.com/publication/obbba-brings-45x-changes-though-not-wholesale-repeal"
+    source_type: "law firm legal analysis"
+    sensitivities: [policy_scenarios]
+    notes: "§45X survived w/ 2030-2033 phase-out + FEOC; §30D ended 9/30/25; ATVM repealed. Cross-ref Stage-5 claim POLICY-01."
+    credibility:
+      tier: 1
+      rationale: "Law firm analysis of statutory text; primary source interpretation of enacted legislation"
+
+  - id: jll_skilled_trades
+    name: "JLL — Critical Skilled Trades Shortage (2025)"
+    description: "Commercial real estate services firm analysis of skilled trades shortage and apprenticeship gaps"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://www.jll.com/en-us/newsroom/critical-skilled-trades-shortage-threatens-economic-losses"
+    source_type: "commercial real estate/consulting firm report"
+    sensitivities: [policy_scenarios]
+    notes: "~4:1 trades:apprentice (all-trades); 82% shortage (boom-era). Cross-ref Stage-5 claim REGION-02."
+    credibility:
+      tier: 6
+      rationale: "Commercial real estate firm report; practitioner perspective on labor market conditions"
+
+  - id: georgia_quickstart_hmgma
+    name: "Georgia Department of Economic Development — Hyundai Motor Group Metaplant America Training"
+    description: "State training program effectiveness for Hyundai-SK battery facility; closes skills gaps in 18-24 months"
+    provided: false
+    processed: false
+    raw_file: null
+    url: "https://georgia.org/hyundai-motor-group-metaplant-america"
+    source_type: "state government economic development"
+    sensitivities: [policy_scenarios]
+    notes: "State training closes gaps in ~18-24 months. Cross-ref Stage-5 claim REGION-04."
+    credibility:
+      tier: 1
+      rationale: "Official state government economic development agency"

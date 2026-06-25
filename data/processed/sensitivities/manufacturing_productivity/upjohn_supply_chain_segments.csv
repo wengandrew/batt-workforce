@@ -1,0 +1,25 @@
+region,segment_id,segment_name,supply_chain_position,employment_2023,share_pct_2023,production_gwh_2023,source
+US,1,Raw Materials,upstream,1825,2.9,200,upjohn_naatbatt_2023
+US,2,Battery Grade Materials,upstream,4701,7.4,200,upjohn_naatbatt_2023
+US,3,Other Battery Component Materials,upstream,6743,10.6,200,upjohn_naatbatt_2023
+US,4,Electrodes and Cells,midstream,10585,16.6,200,upjohn_naatbatt_2023
+US,5,Modules and Packs,midstream,13903,21.8,200,upjohn_naatbatt_2023
+US,6,End of Life/Recycling,downstream,2963,4.7,200,upjohn_naatbatt_2023
+US,7,Equipment,downstream,4228,6.6,200,upjohn_naatbatt_2023
+US,8,Service and Repair,downstream,9809,15.4,200,upjohn_naatbatt_2023
+US,9,Research and Development,downstream,6160,9.7,200,upjohn_naatbatt_2023
+US,10,Modeling,downstream,2675,4.2,200,upjohn_naatbatt_2023
+US,11,Distributors,downstream,75,0.1,200,upjohn_naatbatt_2023
+US,Total,Total,total,63667,100.0,200,upjohn_naatbatt_2023
+Michigan,1,Raw Materials,upstream,400,5.3,32.2,upjohn_naatbatt_2023
+Michigan,2,Battery Grade Materials,upstream,54,0.7,32.2,upjohn_naatbatt_2023
+Michigan,3,Other Battery Component Materials,upstream,63,0.8,32.2,upjohn_naatbatt_2023
+Michigan,4,Electrodes and Cells,midstream,1406,18.7,32.2,upjohn_naatbatt_2023
+Michigan,5,Modules and Packs,midstream,3534,46.9,32.2,upjohn_naatbatt_2023
+Michigan,6,End of Life/Recycling,downstream,114,1.5,32.2,upjohn_naatbatt_2023
+Michigan,7,Equipment,downstream,41,0.5,32.2,upjohn_naatbatt_2023
+Michigan,8,Service and Repair,downstream,446,5.9,32.2,upjohn_naatbatt_2023
+Michigan,9,Research and Development,downstream,1315,17.5,32.2,upjohn_naatbatt_2023
+Michigan,10,Modeling,downstream,160,2.1,32.2,upjohn_naatbatt_2023
+Michigan,11,Distributors,downstream,0,0.0,32.2,upjohn_naatbatt_2023
+Michigan,Total,Total,total,7533,100.0,32.2,upjohn_naatbatt_2023

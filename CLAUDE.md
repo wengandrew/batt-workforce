@@ -13,6 +13,7 @@ batt-workforce/
     raw/                        # Primary research files (PDFs, spreadsheets) — human-provided
     processed/                  # Agent-extracted structured data
       sources.yaml              # Registry of all primary sources + processing status
+      sources/                  # One markdown file per source: citation, credibility, quotes
       sensitivities/            # One subfolder per identified sensitivity
         automation/
         energy_density/
@@ -58,6 +59,10 @@ batt-workforce/
 - **CSV files**: machine-readable tabular data (one per dataset)
 - **metadata.yaml**: accompanies each CSV with provenance, assumptions, units, and sensitivity category
 - **Mathematical assumptions**: documented in metadata YAML under `assumptions:` key — includes curve fit parameters, extrapolation methods, confidence intervals
+
+### Source credibility ratings
+- Every entry in `data/processed/sources.yaml` carries a `credibility: {tier, rationale}` field on a 7-tier scale (1 = most credible: government/national lab/official data; 7 = least credible: blogs, opinion, promotional material). See `data/processed/sources/README.md` for the full scale and the per-source markdown file format.
+- Each cataloged source also gets a `data/processed/sources/<source_id>.md` file with its citation, credibility rating, archived location, and extracted quotes/claims.
 
 ## Development Commands
 

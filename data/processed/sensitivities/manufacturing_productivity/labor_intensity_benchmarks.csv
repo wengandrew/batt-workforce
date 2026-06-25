@@ -1,14 +1,17 @@
 facility,region,year,workers_per_gwh,workforce_total,production_gwh,years_since_start,phase,source
-CATL (Global),China,2019,180,40000,222,8,ramp_up,committee_insights_paper
-CATL (Global),China,2020,160,50000,313,9,scaling,committee_insights_paper
-CATL (Global),China,2021,148,61000,412,10,scaling,committee_insights_paper
-CATL (Global),China,2022,145,80000,552,11,scaling,committee_insights_paper
-CATL (Global),China,2023,144,90000,625,12,maturing,committee_insights_paper
-CATL (Global),China,2024,143,97000,676,13,steady_state,committee_insights_paper
-LGES (Michigan, US),US,2024,108,,,,steady_state,committee_insights_paper
-PENA (Nevada, US),US,2024,137,,,,steady_state,committee_insights_paper
-LGES (Wroclaw, Poland),EU,2020,464,,,,ramp_up,committee_insights_paper
-LGES (Wroclaw, Poland),EU,2021,350,,,,ramp_up,committee_insights_paper
-LGES (Wroclaw, Poland),EU,2022,200,,,,scaling,committee_insights_paper
-LGES (Wroclaw, Poland),EU,2023,120,,,,scaling,committee_insights_paper
-LGES (Wroclaw, Poland),EU,2024,81,7000,86,5,steady_state,committee_insights_paper
+"LGES (Wroclaw, Poland)",EU,2017,1000,,,0,startup_anchor,battery_labor_intensity_study
+"LGES (Wroclaw, Poland)",EU,2018,504,,,1,ramp_up,battery_labor_intensity_study
+"LGES (Wroclaw, Poland)",EU,2020,115,,,3,scaling,battery_labor_intensity_study
+"LGES (Wroclaw, Poland)",EU,2022,93,,,5,maturing,battery_labor_intensity_study
+"LGES (Wroclaw, Poland)",EU,2024,81,7000,86,7,steady_state,battery_labor_intensity_study
+"LGES (Michigan, US)",US,2013,1000,,,0,startup_anchor,battery_labor_intensity_study
+"LGES (Michigan, US)",US,2018,270,,,5,scaling,battery_labor_intensity_study
+"LGES (Michigan, US)",US,2024,111,,,11,steady_state,battery_labor_intensity_study
+"PENA (Nevada, US)",US,2016,1000,,,0,startup_anchor,battery_labor_intensity_study
+"PENA (Nevada, US)",US,2018,152,,,2,scaling,battery_labor_intensity_study
+"PENA (Nevada, US)",US,2022,141,,,6,steady_state,battery_labor_intensity_study
+CATL (Global),China,2020,1000,,,0,startup_anchor,battery_labor_intensity_study
+CATL (Global),China,2021,467,,,1,ramp_up,battery_labor_intensity_study
+CATL (Global),China,2022,226,,,2,scaling,battery_labor_intensity_study
+CATL (Global),China,2023,156,,,3,maturing,battery_labor_intensity_study
+CATL (Global),China,2024,144,,,4,steady_state,battery_labor_intensity_study
