@@ -3,46 +3,59 @@
     "title": "Projected Global Battery Manufacturing Workforce",
     "x_axis": "Year",
     "y_axis": "Cumulative Workers (thousands)",
-    "last_updated": "2026-06-03",
-    "note": "Placeholder projections — will be refined with primary source data"
+    "last_updated": "2026-06-24",
+    "note": "Global GWh demand curve anchored on McKinsey 'Battery 2035: Building New Advantages' (2024: 1.0 TWh, 2025: 1.6 TWh, 2030: 4.2 TWh, 2035: 6.8 TWh). Intermediate years (2026-2029, 2032) are CAGR interpolations between McKinsey anchors. 2040/2045/2050 are extrapolation beyond McKinsey's horizon (~7%/5%/4% decelerating CAGR) — assumption only, not sourced.",
+    "demand_source": "mckinsey_research",
+    "market_share_source": "iea_gevo_2026",
+    "market_share_data_source": "iea_ev_data_explorer_2026",
+    "market_share_cross_check": "bnef_evo_2025",
+    "market_share_note": "All four regional rows = each region's share of global cell-MANUFACTURING production (jobs follow factories), anchored on IEA Global EV Outlook 2026 (published May 2026 — the first major outlook that is POST-OBBBA, the One Big Beautiful Bill Act signed 2025-07-04). HARD IEA anchors now used (2026-06-24 update, sourced from the report's battery-manufacturing chart data + text, not interpolation): (1) 2025 cell-manufacturing capacity by region — China 81%, US 7.4%, EU 6.9%, Korea 1.9%, Japan 1.3%, RoW 1.5% (IEA chart 'installed nameplate capacity by region and HQ, 2025', data from Benchmark Mineral Intelligence; Korea+Japan+RoW folded into the model's 'Rest of World'); matches IEA text 'China >80% of battery cell production, EU & US ~6-7% each' (GEVO 2026 ch. Manufacturing & Trade). (2) China falls to ~two-thirds (~67%) by 2030 and stays ~two-thirds of batteries through 2035 STEPS (report text) — so China PLATEAUS near 67%, it does not keep falling to ~60% (the 'just below 60% in 2035' figure in the report is electric-CAR output, not batteries). (3) US cell production <350 GWh (2030) and >400 GWh (2035) STEPS at ~40% utilization of committed nameplate; against the McKinsey global base (4,200 GWh 2030, 6,800 2035) this gives US ~8.3% (2030) declining to ~5.9% (2035) — PEAK-THEN-DECLINE (OBBBA killed consumer EV credits, US demand ~10% of sales vs ~50% previously; 45X manufacturing credit preserved). US row UNCHANGED from prior session (verified against these IEA figures). (4) By 2035 STEPS, EU+US together ~20% of battery production, EMDEs ex-China ~6%, Japan+Korea ~5% — so the model's 'Rest of World' lands at ~11% by 2035 (was overstated at ~20% in the prior interpolation). The EU/RoW SPLIT was the interpolation flagged for repair and is now re-anchored: RoW pulled down to the IEA ~11% (2035) trajectory, China raised to the IEA two-thirds plateau, EU taken as the residual. Columns sum to 1.0. SUPERSEDES the earlier BNEF EVO 2025 curve (pre-OBBBA, June 2025, US RISING to ~8%) — see bnef_evo_2025 (retained as a pre-OBBBA cross-check).",
+    "market_share_basis_note": "Coherence: View B computes regional jobs = global_GWh x regional_production_share x workers_per_GWh x multiplier. The global_GWh scalar uses McKinsey DEMAND (6.8 TWh by 2035) as a proxy for global PRODUCTION volume - valid because at the global level production = consumption. The regional split uses IEA production/capacity shares. KNOWN LIMITATION (EU is the residual sponge): the model pins the US row to IEA's ABSOLUTE US production (400 GWh in 2035) divided by the McKinsey global base, giving US ~5.9% in 2035. But IEA's OWN global base is lower (STEPS battery deployment ~4.74 TWh in 2035 vs McKinsey 6.8 TWh; see demand_gap_note), so on a pure IEA-relative basis US would be ~8.4% and EU ~12% in 2035. Because US is held to the lower McKinsey-base value and China/RoW are pinned to IEA's relative anchors (two-thirds, ~11%), the McKinsey-vs-IEA volume slack accumulates in the EU residual — EU lands at ~16.6% in 2035, ~4-5 pts above IEA's relative ~12%, and EU+US sums to ~22.5% vs the IEA text's ~20%. This is the price of keeping McKinsey as the global scalar AND the US absolute faithful to IEA. ALTERNATIVE not taken: use IEA relative shares throughout (US ~8.6%, EU ~12%, China ~68%, RoW ~11% in 2035) — cleaner internally but reverses the locked US 5.9% peak-then-decline anchor. 2030 EU (~15%) is steep but is forced by IEA's 'China two-thirds by 2030' plus the locked US peak; post-2035 EU/RoW are extrapolations.",
+    "demand_gap_note": "Cross-check on the locked McKinsey global demand backbone: the post-OBBBA IEA GEVO 2026 EV Data Explorer (free, public) reports global battery DEPLOYMENT of 953 GWh (2024) and 1,191 GWh (2025) historical, and projects 2035 at 4,740 GWh (STEPS) / 4,072 GWh (CPS). McKinsey's backbone used here is materially higher: 6,800 GWh in 2035 (~43% above IEA STEPS). McKinsey is retained as the global scalar per the locked param-2 decision, but View B totals should be read as an UPPER demand case; on the IEA STEPS base the global (and US) job numbers would be ~30% lower. See iea_ev_data_explorer_2026."
   },
   "assumptions": {
-    "base_workers_per_gwh": 120,
+    "base_workers_per_gwh": 149,
+    "base_workers_per_gwh_source": "battery_labor_intensity_study",
+    "base_workers_per_gwh_note": "149 = v7 'typical plant' mature-floor labor intensity (steady-state, reached ~year 3-4), upper end of the study's 138-149 sensitivity band (v6 floor 138 = average-across-observations; v7 floor 148-149 = one-plant-of-four weighting). Steady-state floor is the correct base for View B because the within-factory ramp-down (>400 -> ~149 over the first ~3 years) is modeled separately in View A.",
     "automation_reduction_per_year": 0.02,
-    "indirect_multiplier": 1.8,
+    "indirect_multiplier": 2.2,
+    "indirect_multiplier_source": "nevada_goed_fy24",
+    "indirect_multiplier_note": "2.2x = direct + indirect + induced employment, from the Tesla Giga Nevada economic-impact multiplier (Nevada GOED FY24). total_jobs = direct x 2.2. NOTE: Faraday's widely-cited '1.8' is a DIFFERENT quantity (incremental battery-supply-chain jobs per direct job, i.e. total = direct x 2.8) and should not be plugged in here as 1.8. The 2.2 induced-inclusive multiplier also aligns with Upjohn's full-value-chain ratio (318.5/144 jobs/GWh) and with IMPLAN's 3.4x discounted ~30% per Upjohn's I-O overstatement finding.",
+    "automation_reduction_note": "2%/yr is an analyst assumption (no primary source gives an explicit annual rate); captures secular cross-vintage technology improvement only (the within-factory ramp decline is already in View A, so this is kept conservative to avoid double-counting). Sensitivity range 1-4%; high_automation scenario = 4%/yr upper bound.",
     "regions": ["US", "EU", "China", "Rest of World"]
   },
   "global_gwh_demand": [
     {"year": 2024, "gwh": 1000},
-    {"year": 2025, "gwh": 1200},
-    {"year": 2026, "gwh": 1450},
-    {"year": 2027, "gwh": 1700},
-    {"year": 2028, "gwh": 2000},
-    {"year": 2029, "gwh": 2250},
-    {"year": 2030, "gwh": 2500},
-    {"year": 2032, "gwh": 3200},
-    {"year": 2035, "gwh": 4500},
-    {"year": 2040, "gwh": 7000},
-    {"year": 2045, "gwh": 9500},
-    {"year": 2050, "gwh": 12000}
+    {"year": 2025, "gwh": 1600},
+    {"year": 2026, "gwh": 1940},
+    {"year": 2027, "gwh": 2350},
+    {"year": 2028, "gwh": 2860},
+    {"year": 2029, "gwh": 3460},
+    {"year": 2030, "gwh": 4200},
+    {"year": 2032, "gwh": 5090},
+    {"year": 2035, "gwh": 6800},
+    {"year": 2040, "gwh": 9500},
+    {"year": 2045, "gwh": 12200},
+    {"year": 2050, "gwh": 14800}
   ],
   "scenarios": {
     "baseline": {
       "label": "Baseline",
       "market_shares": {
-        "US": [0.07, 0.08, 0.09, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10],
-        "EU": [0.08, 0.09, 0.10, 0.10, 0.11, 0.11, 0.12, 0.12, 0.12, 0.13, 0.13, 0.13],
-        "China": [0.77, 0.75, 0.73, 0.72, 0.70, 0.69, 0.65, 0.63, 0.60, 0.58, 0.56, 0.55],
-        "Rest of World": [0.08, 0.08, 0.08, 0.08, 0.09, 0.10, 0.13, 0.15, 0.18, 0.19, 0.21, 0.22]
+        "US": [0.045, 0.055, 0.063, 0.07, 0.076, 0.081, 0.083, 0.074, 0.059, 0.052, 0.047, 0.043],
+        "EU": [0.06, 0.068, 0.084, 0.1, 0.116, 0.131, 0.15, 0.151, 0.166, 0.185, 0.198, 0.212],
+        "China": [0.84, 0.82, 0.79, 0.76, 0.73, 0.7, 0.67, 0.67, 0.665, 0.64, 0.62, 0.6],
+        "Rest of World": [0.055, 0.057, 0.063, 0.07, 0.078, 0.088, 0.097, 0.105, 0.11, 0.123, 0.135, 0.145]
       }
     },
     "us_high": {
-      "label": "US High Growth (IRA continues)",
+      "label": "US High (strong 45X buildout / demand recovery)",
+      "note": "Post-OBBBA upside: the 45X manufacturing credit (which OBBBA preserved through its 2030-2033 phase-down) drives a stronger US cell-production buildout and/or US EV demand recovers, lifting US share to a ~10-11% plateau instead of the baseline peak-and-decline. NOT the old 'IRA continues' scenario — OBBBA already repealed the consumer EV credits.",
       "market_shares": {
-        "US": [0.07, 0.09, 0.11, 0.13, 0.14, 0.14, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15],
-        "EU": [0.08, 0.09, 0.10, 0.10, 0.11, 0.11, 0.12, 0.12, 0.12, 0.13, 0.13, 0.13],
-        "China": [0.77, 0.74, 0.71, 0.68, 0.65, 0.63, 0.60, 0.58, 0.55, 0.52, 0.50, 0.48],
-        "Rest of World": [0.08, 0.08, 0.08, 0.09, 0.10, 0.12, 0.13, 0.15, 0.18, 0.20, 0.22, 0.24]
+        "US": [0.045, 0.057, 0.068, 0.078, 0.088, 0.095, 0.1, 0.105, 0.11, 0.11, 0.11, 0.11],
+        "EU": [0.06, 0.068, 0.084, 0.1, 0.116, 0.131, 0.15, 0.151, 0.166, 0.185, 0.198, 0.212],
+        "China": [0.84, 0.818, 0.785, 0.752, 0.718, 0.686, 0.653, 0.639, 0.614, 0.582, 0.557, 0.533],
+        "Rest of World": [0.055, 0.057, 0.063, 0.07, 0.078, 0.088, 0.097, 0.105, 0.11, 0.123, 0.135, 0.145]
       }
     },
     "high_automation": {

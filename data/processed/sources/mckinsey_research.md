@@ -5,10 +5,29 @@
 - **Accessed**: 2026-06-12
 - **Raw file**: data/raw/mckinsey_research.pdf (17 pages)
 - **Credibility**: Tier 4 — Major management consultancy (McKinsey) with established Battery Accelerator Team; deep industry expertise in automotive and battery manufacturing, but claims reflect consulting perspectives rather than independent primary research
-- **Linked sensitivities**: manufacturing_productivity, automation, policy_scenarios
+- **Linked sensitivities**: manufacturing_productivity, automation, policy_scenarios, market_share
+- **Dashboard linkage**: provides the global GWh demand curve in `site/data/global_jobs.json` (`global_gwh_demand`) that drives View B (Cumulative Global Battery Workforce)
 - **Linked claims (from Committee Insights sheet)**: "Key Insights and Findings — Maintenance, quality, and technical support roles may become increasingly important", researcher: Rati Mehta
 
 ## Extracted Quotes / Claims
+
+### Global Battery Demand Outlook (drives View B demand curve)
+> "Demand for Li-ion batteries crossed the milestone threshold of 1.0 terawatt-hours (TWh) in 2024 and likely reached nearly 1.6 TWh in 2025."
+
+> "McKinsey Battery Insights expects a global battery market size of 4.2 TWh in 2030 and 6.8 TWh by 2035, with more than 85 percent of this demand driven by Li-ion batteries, primarily due to the strong demand for battery electric vehicles (EVs) and energy storage."
+
+> "This 2030 demand projection is lower than our 2023 estimate of 4.7 TWh ... but still well above a 2019 estimate of 2.6 TWh."
+
+**Demand anchors used in the dashboard** (total global battery demand, GWh):
+
+| Year | McKinsey figure | GWh | Provenance |
+|------|-----------------|-----|------------|
+| 2024 | "crossed 1.0 TWh" | 1,000 | McKinsey (reported) |
+| 2025 | "nearly 1.6 TWh" | 1,600 | McKinsey (reported) |
+| 2030 | "4.2 TWh" | 4,200 | McKinsey (forecast) |
+| 2035 | "6.8 TWh" | 6,800 | McKinsey (forecast) |
+
+Implied growth: ~21%/yr CAGR 2025→2030, decelerating to ~10%/yr 2030→2035. Intermediate years (2026–2029, 2032) in `global_gwh_demand` are CAGR interpolations between these anchors. **2040/2045/2050 (9,500 / 12,200 / 14,800 GWh) are extrapolated beyond McKinsey's published horizon** (~7%/5%/4% decelerating CAGR) and are an analyst assumption, not a McKinsey figure.
 
 ### Scrap Rates and Yield
 > "Scrap rates during a facility's early ramp-up period can reach 70 or 80 percent, and disposal of hazardous waste can be costly."

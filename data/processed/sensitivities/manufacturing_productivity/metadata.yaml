@@ -8,14 +8,15 @@ units:
 
 datasets:
   - file: labor_intensity_benchmarks.csv
-    description: "Compiled labor intensity data from publicly available sources"
+    description: "Workers/GWh vs. years-since-production-start for 4 cell plants (LGES Poland, LGES Michigan, PENA Nevada, CATL global), from the battery_labor_intensity_study v5 dataset. Drives View A scatter + characteristic curve."
     sources:
-      - committee_insights_paper
+      - battery_labor_intensity_study
     assumptions:
-      - "Production capacity = realized or deployed capacity, not announced/planned capacity"
       - "Workers include direct manufacturing employees only (not indirect/induced)"
+      - "years_since_start uses the study's v5 revised production-start years (Michigan 2013, PENA 2016, Poland 2017, CATL 2020)"
+      - "The t=0 / 1000 workers-per-GWh row per plant is an ENFORCED startup anchor (a modeling constraint in the study's anchored-logistic fit), not an observed value — phase=startup_anchor"
+      - "Characteristic curve = anchored logistic; floor reported as a 138-149 w/GWh band (v6 per-observation floor 137.8, v7 per-plant floor 148.5); View A leads with v7 ('typical plant')"
       - "CATL global figures aggregate all CATL facilities worldwide"
-      - "Some intermediate years for LGES Poland are interpolated from endpoint data"
 
   - file: upjohn_supply_chain_segments.csv
     description: "U.S. and Michigan lithium-ion battery supply chain employment by 12-segment NAATBatt/NREL classification (2023), with relative share of total"

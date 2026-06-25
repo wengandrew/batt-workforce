@@ -1,0 +1,11 @@
+# Local-only working files (not committed)
+committee_matrix_source_review.md
+
+# Research model inputs — local working files, kept out of version control
+research/model_inputs/
+
+# Standalone offline model viewer (local working artifact)
+model_preview.html
+
+# OS / editor cruft
+.DS_Store

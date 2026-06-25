@@ -16,11 +16,53 @@ sources:
     raw_file: "data/raw/mckinsey_research.pdf"
     url: "https://www.mckinsey.com/features/mckinsey-center-for-future-mobility/our-insights/battery-2035-building-new-advantages"
     source_type: "management consultancy research/insights article"
-    sensitivities: [manufacturing_productivity, automation, policy_scenarios]
-    notes: "January 2026 article (Battery Accelerator Team). Scrap rates during early ramp-up reported as 70-80% (i.e. 20-30% yield), improving to 95%+ within 18 months — higher than the 20-40% figure cited for linkedin_chinese_gigafactory_scrap; cross-check the two before combining. Labor intensity benchmark: 30-40 FTE/GWh. Confirms key claim: operator skills/quality-consistency are decisive, structured training/competency systems recommended (some battery startups failed due to skills deficits). Automation (digital twins, inline metrology, SPC, high-speed stacking, dry electrode coating) shifts workforce toward technical/diagnostic roles. Notes IRA Section 45X and EU localization requirements as cost/capex drivers relevant to policy_scenarios. Used in Stage-5 demand band modeling; distinct from mckinsey_demand_outlook_2025."
+    sensitivities: [manufacturing_productivity, automation, policy_scenarios, market_share]
+    notes: "January 2026 article (Battery Accelerator Team). Scrap rates during early ramp-up reported as 70-80% (i.e. 20-30% yield), improving to 95%+ within 18 months — higher than the 20-40% figure cited for linkedin_chinese_gigafactory_scrap; cross-check the two before combining. Labor intensity benchmark: 30-40 FTE/GWh. Confirms key claim: operator skills/quality-consistency are decisive, structured training/competency systems recommended (some battery startups failed due to skills deficits). Automation (digital twins, inline metrology, SPC, high-speed stacking, dry electrode coating) shifts workforce toward technical/diagnostic roles. Notes IRA Section 45X and EU localization requirements as cost/capex drivers relevant to policy_scenarios. Used in Stage-5 demand band modeling; distinct from mckinsey_demand_outlook_2025. GLOBAL DEMAND OUTLOOK (drives View B demand curve in site/data/global_jobs.json): 1.0 TWh in 2024, ~1.6 TWh in 2025, 4.2 TWh in 2030, 6.8 TWh in 2035 (>85% Li-ion); ~21%/yr CAGR 2025-30 decelerating to ~10%/yr 2030-35. 2040-2050 demand is extrapolated beyond McKinsey's horizon (analyst assumption, not sourced)."
     credibility:
       tier: 4
       rationale: "Major management consultancy with deep industry expertise; specific manufacturing claims require verification against primary data"
+
+  - id: iea_gevo_2026
+    name: "IEA — Global EV Outlook 2026 (Battery Manufacturing & Trade)"
+    description: "Post-OBBBA regional battery cell manufacturing capacity/production shares; PRIMARY source for the View B regional market-share matrix (market_shares in global_jobs.json)"
+    provided: false
+    processed: true
+    raw_file: null
+    url: "https://www.iea.org/reports/global-ev-outlook-2026/manufacturing-and-trade"
+    source_type: "intergovernmental agency report (free / publicly downloadable)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Published 2026-05-20 — the first major EV outlook that is POST-OBBBA (One Big Beautiful Bill Act, signed 2025-07-04), so it reflects the repeal of the consumer EV credits while the 45X manufacturing credit was preserved (phase-down 2030-2033). Key figures: global nameplate Li-ion cell capacity >4 TWh end-2025 (~30% YoY growth), ~6.5 TWh of committed projects by 2030 (up to ~9 TWh if all announcements complete, ~70% committed). China >80-85% of global cell production in 2025 falling to ~two-thirds (~67%) by 2030. US cell PRODUCTION <350 GWh (2030) and just over 400 GWh (2035) at only ~40% utilization of committed nameplate, primarily serving domestic needs (remainder exported to Mexico). EU & US each ~6-7% of global capacity in 2025; in the EU, Korean-firm share of capacity falls ~85%->30% (2030) while EU-based firms rise 5%(2024)->20%. Against the McKinsey global demand base this gives a US production share of ~8.3% (2030) declining to ~5.9% (2035) — a peak-then-decline driven by the post-OBBBA US demand collapse (~10% of car sales vs ~50% previously projected). Free/public (no paywall) — chosen over BNEF EVO 2025 for both post-OBBBA timeliness AND reproducibility. Drives market_shares (US/EU/China/Rest of World) in site/data/global_jobs.json; non-US split and post-2035 years are interpolated."
+    credibility:
+      tier: 2
+      rationale: "IEA flagship annual outlook, freely published with downloadable data; authoritative and widely cited, though forward projections (STEPS/APS scenarios) carry forecast uncertainty"
+
+  - id: iea_ev_data_explorer_2026
+    name: "IEA — Global EV Data Explorer 2026 (GEVO 2026 data annex)"
+    description: "Companion downloadable dataset to GEVO 2026 (iea_gevo_2026): DEMAND-side EV statistics (sales, stock, charging, prices) and battery DEPLOYMENT by macro-region/year. Used as the post-OBBBA global-demand cross-check; NOT a manufacturing-capacity source."
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/EV Data Explorer 2026.xlsx"
+    url: "https://www.iea.org/data-and-statistics/data-tools/global-ev-data-explorer"
+    source_type: "intergovernmental agency data tool (free / publicly downloadable .xlsx)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "Uploaded to research/model_inputs/ (gitignored). 49,176-row workbook, sheet GEVO_EV_2026; parameters = EV sales/stock/charging/prices and 'Battery deployment' (GWh of batteries in EVs sold). IMPORTANT: this annex is DEMAND-side only — it has NO cell-manufacturing-capacity parameter, so it CANNOT supply the per-region manufacturing split for market_shares (that split is anchored on the GEVO 2026 report's manufacturing chapter + chart data — see iea_gevo_2026). Its value here is the post-OBBBA GLOBAL-DEMAND cross-check on the locked McKinsey backbone: world battery deployment 953 GWh (2024), 1,191 GWh (2025) historical; 4,740 GWh (2035 STEPS) / 4,072 GWh (2035 CPS) — ~30% below McKinsey's 6,800 GWh. Regional DEPLOYMENT shares (≠ manufacturing shares; e.g. US deploys ~12% in 2024 but manufactures ~4-5%) recorded for context only. Projection years are 2025 + 2035 only (no 2030/2050). Documented in global_jobs.json -> metadata.demand_gap_note."
+    credibility:
+      tier: 2
+      rationale: "IEA flagship data tool, freely downloadable and reproducible; demand-side historical data is high-confidence, forward STEPS/CPS projections carry forecast uncertainty"
+
+  - id: bnef_evo_2025
+    name: "BloombergNEF — Electric Vehicle Outlook 2025 (Global Battery Cell Manufacturing Capacity)"
+    description: "PRE-OBBBA cross-check (superseded as primary by iea_gevo_2026): risk-adjusted and as-reported global lithium battery cell manufacturing capacity by region, 2020-2030 (TWh)"
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/Global Production Capacity Forecast - BNEF EVO 2025.csv"
+    url: "https://about.bnef.com/electric-vehicle-outlook/"
+    source_type: "commercial market-research / industry forecast (subscription)"
+    sensitivities: [market_share, policy_scenarios]
+    notes: "DEMOTED to a pre-OBBBA cross-check (no longer the primary market-share source — see iea_gevo_2026). Two reasons: (1) published June 2025, BEFORE the One Big Beautiful Bill Act (2025-07-04), so it assumes IRA-intact US demand and shows the US production share RISING to ~8% by 2035 — the opposite of the post-OBBBA peak-then-decline IEA now shows; (2) BNEF EVO is subscription-only, so the per-region figures are not publicly reproducible (the raw CSV is gitignored and not redistributed; only attributed, derived figures are cited). Original risk-adjusted figures (TWh): China 2.04 (2024)->6.47 (2030); US 0.11->0.63; Europe 0.26->0.90; sum-of-regions 2.47->8.50; global as-reported 4.63->13.98. US share of risk-adjusted regional total: 4.5% (2024), 5.0% (2025), 7.4% (2030). Still useful as a capacity cross-check: the supply-vs-demand finding (McKinsey demand at 40-49% of risk-adjusted capacity through 2030, so demand binds) holds under both BNEF and IEA."
+    credibility:
+      tier: 2
+      rationale: "BloombergNEF flagship industry forecast using bottom-up, risk-adjusted capacity modeling and widely used as an industry benchmark; commercial (non-peer-reviewed), subscription-only, and pre-OBBBA"
 
   - id: ohio_research
     name: "Ohio Governor's Office of Workforce Transformation / OMA — Accelerating Ohio's Auto & Advanced Mobility Workforce (2023)"
@@ -743,6 +785,20 @@ sources:
     credibility:
       tier: "mixed"
       rationale: "Per-row credibility indicated in CSV; facilities range from Tier 1 government data to Tier 4-6 company disclosures and media reports"
+
+  - id: battery_labor_intensity_study
+    name: "Volta Foundation — Battery Labor Intensity Study (anchored-logistic curve fit)"
+    description: "PRIMARY basis for View A (workers/GWh vs years-since-start) and the 149 base in View B: an anchored four-parameter logistic fit of cell-manufacturing labor intensity decay across four gigafactories (LGES Poland, LGES Michigan, PENA Nevada, CATL global)."
+    provided: true
+    processed: true
+    raw_file: "research/model_inputs/battery_labor_intensity_study/"
+    url: "not archived: internal Volta modeling package (gitignored under research/model_inputs/)"
+    source_type: "internal derived analysis (curve fit over primary gigafactory disclosures)"
+    sensitivities: [manufacturing_productivity, automation]
+    notes: "Volta's own modeling study (see FINDINGS.md in the package). Model: WPV(x)=a/(1+exp(-b(x-c)))+WPV0 with WPV0 enforcing WPV(0)=1000 (the 1,000 w/GWh startup level is an enforced anchor, NOT an observation), leaving 3 free params (a,b,c). Fit three ways: per-plant (v5b), pooled equal-per-observation (v6, floor 137.8 w/GWh), pooled equal-per-plant (v7, floor 148.5 w/GWh). RECOMMENDED reporting: mature-floor sensitivity band 138-149 w/GWh; the spread is entirely 'how much should Poland (the low-floor outlier at ~86, and the best-sampled plant) count' — v6 weights by observation count, v7 caps each plant at weight 1. Lead with v7 (148.5) for 'typical plant' framing -> this is the 149 base used in global_jobs.json (base_workers_per_gwh); cite v6 (138) only for the narrow 'average across observations' claim. Shared shape: steep first-year decline (inflection ~0.7-0.8 yr) settling to the mature floor by ~year 3-4. The View A dashboard plots the v7 anchored-logistic curve (solid, floor 148.5) with v6 (dashed, floor 137.8); the published sigmoid params are emitted by scripts/generate_dashboard_data.py (study_characteristic_curve) so they survive regeneration. Underlying per-plant observations live in data/processed/sensitivities/manufacturing_productivity/labor_intensity_benchmarks.csv (source_id column = battery_labor_intensity_study). CAVEATS: Michigan & PENA have 2 obs vs 3 params (DOF=-1) so their per-plant params are illustrative, not estimates; descriptive not predictive (do not extrapolate beyond observed window); a hierarchical/random-effects fit is the statistically ideal version but is infeasible with 4 clusters of 2-4 points. DISTINCT from cell_labor_intensity_dataset_2026 (a separate 40-facility band-separation compilation, steady-state 72-87 w/GWh on a nameplate denominator) and from ev_labor_intensity_study (assembly tier, not cell)."
+    credibility:
+      tier: 3
+      rationale: "Internal Volta analysis with fully documented, reproducible methodology (deterministic fit_all.py) built on primary gigafactory disclosures; transparent about its own limitations (small n, two-point underdetermination, anchor-as-constraint), but not peer-reviewed and based on only four plants"
 
   - id: lges_wroclaw
     name: "LG Energy Solution — Wroclaw Facility Labor Intensity (public data)"

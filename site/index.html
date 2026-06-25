@@ -86,8 +86,8 @@
 
         <div class="control-group">
           <label>Base Workers per GWh (steady-state)</label>
-          <input type="range" id="ctrl-workers-per-gwh" min="60" max="200" value="120" step="5">
-          <span class="value-display" id="val-workers-per-gwh">120</span>
+          <input type="range" id="ctrl-workers-per-gwh" min="60" max="200" value="149" step="1">
+          <span class="value-display" id="val-workers-per-gwh">149</span>
         </div>
 
         <div class="control-group">
@@ -98,20 +98,20 @@
 
         <div class="control-group">
           <label>Indirect Job Multiplier</label>
-          <input type="range" id="ctrl-multiplier" min="1.0" max="3.0" value="1.8" step="0.1">
-          <span class="value-display" id="val-multiplier">1.8x</span>
+          <input type="range" id="ctrl-multiplier" min="1.0" max="3.0" value="2.2" step="0.1">
+          <span class="value-display" id="val-multiplier">2.2x</span>
         </div>
 
         <div class="control-group">
-          <label>US Market Share 2035 (%)</label>
-          <input type="range" id="ctrl-us-share" min="3" max="25" value="10" step="1">
-          <span class="value-display" id="val-us-share">10%</span>
+          <label>US Production Share, ~2030 peak (%)</label>
+          <input type="range" id="ctrl-us-share" min="3" max="15" value="8" step="1">
+          <span class="value-display" id="val-us-share">8%</span>
         </div>
 
         <div class="control-group">
           <label>Global GWh Demand 2035</label>
-          <input type="range" id="ctrl-gwh-2035" min="2000" max="8000" value="4500" step="250">
-          <span class="value-display" id="val-gwh-2035">4,500 GWh</span>
+          <input type="range" id="ctrl-gwh-2035" min="2000" max="10000" value="6800" step="250">
+          <span class="value-display" id="val-gwh-2035">6,800 GWh</span>
         </div>
 
       </div>
@@ -391,9 +391,9 @@
       </div>
       <p>Where:</p>
       <ul>
-        <li><strong>GWh_demand(y)</strong> &mdash; total global battery demand from demand forecasts</li>
+        <li><strong>GWh_demand(y)</strong> &mdash; total global battery demand, anchored on McKinsey <em>Battery 2035</em> (1.0&nbsp;TWh in 2024, 1.6&nbsp;TWh in 2025, 4.2&nbsp;TWh in 2030, 6.8&nbsp;TWh in 2035); years between anchors interpolated by CAGR, and 2040&ndash;2050 extrapolated beyond McKinsey's horizon</li>
         <li><strong>workers_per_gwh(y)</strong> &mdash; from View A curve, accounting for automation trajectory</li>
-        <li><strong>indirect_multiplier</strong> &mdash; scales direct jobs to include indirect and induced employment</li>
+        <li><strong>indirect_multiplier</strong> &mdash; scales direct jobs to include indirect and induced employment (baseline 2.2&times;, from the Tesla Giga Nevada economic-impact study; Nevada GOED FY24)</li>
         <li><strong>policy_modifier(y)</strong> &mdash; adjusts regional distribution based on policy scenario</li>
       </ul>
       <p>Regional breakdown uses market share assumptions adjustable via dashboard controls.</p>

@@ -103,10 +103,43 @@ def fit_curve(facilities):
         return {"note": f"Curve fit failed: {e}"}
 
 
+def study_characteristic_curve():
+    """Published characteristic curves from the battery_labor_intensity_study.
+
+    The study fits an ANCHORED LOGISTIC (sigmoid), not the crude exponential in
+    fit_curve(): WPV(t) = a / (1 + exp(-b*(t-c))) + WPV0, with WPV0 derived so the
+    curve passes through 1000 workers/GWh at t=0. These parameters come straight
+    from FINDINGS.md (sections 4-5) and supersede a live scipy fit, since the study
+    already performed the fit with the appropriate functional form. See FINDINGS.md
+    section 6 for why both v6 and v7 are reported (the 138-149 floor band).
+    """
+    return {
+        "model": "anchored_logistic",
+        "equation": "workers_per_gwh = a/(1+exp(-b*(t-c))) + WPV0;  WPV0 = 1000 - a/(1+exp(b*c))",
+        "source": "battery_labor_intensity_study (FINDINGS.md sec. 4-5)",
+        "anchor_workers_per_gwh": 1000,
+        "primary": "v7_typical_plant",
+        "mature_floor_band": [137.8, 148.5],
+        "characteristic_curves": {
+            "v7_typical_plant": {
+                "a": -930.8, "b": 2.940, "c": 0.808, "floor": 148.5,
+                "weighted_r_squared": 0.809,
+                "note": "equal-per-plant weighting; recommended for 'typical plant' framing",
+            },
+            "v6_per_observation": {
+                "a": -1030.8, "b": 2.307, "c": 0.708, "floor": 137.8,
+                "r_squared": 0.874,
+                "note": "equal-per-observation; cite only for 'average across observations'",
+            },
+        },
+    }
+
+
 def generate_labor_intensity():
     rows = load_labor_intensity_csv()
     facilities = build_facility_data(rows)
-    curve = fit_curve(facilities)
+    # Use the study's published sigmoid fit rather than the crude exponential fit_curve().
+    curve = study_characteristic_curve()
 
     output = {
         "metadata": {
