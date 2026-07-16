@@ -1,471 +1,619 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Battery Manufacturing Workforce Outlook</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battery Manufacturing Labor Intensity — Cross-Site Dashboard</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --muted:#5c5c5c; --line:#e2e2e2; --bg:#ffffff; --soft:#fafafa;
+    --accent:#7a1f2b; --accent-soft:#f6ecec;
+    --good:#1f6b3a; --warn:#9a6b00; --bad:#a23a2a; --derived:#5b3a9a; --est:#3a4a8a;
+    --catl:#b91c1c; --pena:#0f766e; --wro:#4338ca; --mi:#b45309;
+  }
+  *{box-sizing:border-box;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink); line-height:1.5; margin:0; background:var(--bg);}
+  .wrap{max-width:1180px; margin:0 auto; padding:34px 28px 90px;}
+  h1{font-size:26px; line-height:1.2; margin:0 0 6px;}
+  h2{font-size:20px; margin:20px 0 4px; padding-bottom:6px; border-bottom:2px solid var(--accent);}
+  h3{font-size:15px; margin:22px 0 8px; color:var(--accent);}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 4px;}
+  p{font-size:14px;}
+  a{color:var(--accent); text-decoration:none; border-bottom:1px solid #d8b9bd;}
+  a:hover{background:var(--accent-soft);}
+  .lede{font-size:15px; max-width:940px;}
+  .sech{font-size:14px; color:var(--accent); margin:24px 0 6px; font-weight:700; letter-spacing:.2px;}
+  .mininote{font-size:12.5px; color:var(--muted); max-width:980px; margin:6px 0 8px;}
+  .tag{display:inline-block; font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:10px; white-space:nowrap;}
+  .t-primary{background:#e7f1ea; color:var(--good);}
+  .t-secondary{background:#fdf3e0; color:var(--warn);}
+  .t-derived{background:#eae7f1; color:var(--derived);}
+  .t-est{background:#e8ecf7; color:var(--est);}
+  .t-gap{background:#f7e6e3; color:var(--bad);}
+  .conf{font-size:10.5px; font-weight:700;}
+  .c-high{color:var(--good);} .c-med{color:var(--warn);} .c-low{color:var(--bad);}
+  table{border-collapse:collapse; width:100%; margin:12px 0 8px; font-size:12.5px;}
+  th,td{border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top;}
+  th{background:var(--accent-soft); font-weight:600;}
+  tbody tr:nth-child(even){background:var(--soft);}
+  td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .footnote{font-size:12px; color:var(--muted);}
+  .caveatbox{background:var(--soft); border-left:4px solid var(--muted); padding:10px 14px; margin:16px 0 4px; border-radius:0 6px 6px 0; font-size:12.5px;}
+  .caveatbox b{display:block; margin-bottom:3px; color:var(--ink);}
+  .controls{display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center; margin:10px 0 6px; font-size:13px;}
+  .controls .grp{display:flex; gap:6px 10px; align-items:center; flex-wrap:wrap;}
+  .controls .grp b{font-size:12px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.3px;}
+  .btn{border:1px solid var(--line); background:#fff; border-radius:16px; padding:3px 12px; font-size:12.5px; cursor:pointer;}
+  .btn.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .swatch{width:18px; height:0; border-top-width:3px; border-top-style:solid; display:inline-block; margin-right:5px; vertical-align:middle;}
+  .controls label.tog{white-space:nowrap; font-weight:600; cursor:pointer;}
+  .controls label.tog:has(input:not(:checked)){opacity:.42; font-weight:500;}
+  .tswatch{margin-right:4px; font-size:14px; line-height:1;}
+  .chartlegend{display:flex; flex-direction:column; gap:3px; margin:2px 2px 8px; font-size:12px; color:#333;}
+  .chartlegend .legent{white-space:nowrap;}
+  .chartlegend svg{vertical-align:middle; margin-right:4px;}
+  label{cursor:pointer; user-select:none;}
+  .chartbox{padding:8px 8px 4px; background:#fff; position:relative;}
+  .chartbox.solo{max-width:720px;}
+  .tooltip{position:absolute; pointer-events:none; background:#1a1a1a; color:#fff; font-size:11.5px; line-height:1.45;
+    padding:8px 10px; border-radius:6px; max-width:320px; z-index:20; display:none; box-shadow:0 3px 12px rgba(0,0,0,.25);}
+  .tooltip .tt-title{font-weight:700;}
+  .tooltip .tt-q{opacity:.85;}
+  .detail{border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:6px; background:var(--soft);
+    padding:12px 16px; margin:12px 0; font-size:13px; min-height:20px;}
+  .detail .d-empty{color:var(--muted); font-size:12.5px;}
+  .detail h4{margin:0 0 4px; font-size:14px;}
+  .detail .d-row{margin:3px 0;}
+  .detail .d-k{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.3px; margin-right:6px;}
+  .dualgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .minihead{font-size:11px; font-weight:600; color:var(--muted); margin:2px 0 4px 2px;}
+  .tabs{display:flex; flex-wrap:wrap; gap:6px; margin:22px 0 0; padding-top:10px;
+    position:sticky; top:0; background:var(--bg); z-index:10;}
+  .tabs::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent); z-index:2;}
+  .tab{border:1px solid var(--line); border-bottom:none; background:var(--soft); color:var(--muted); position:relative; z-index:1;
+    border-radius:8px 8px 0 0; padding:8px 16px; font-size:13.5px; font-weight:600; cursor:pointer;}
+  .tab.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+  .tab:hover:not(.on){background:var(--accent-soft); color:var(--accent);}
+  .tabpanel[hidden]{display:none;}
+  .tabpanel{animation:bmfade .18s ease;}
+  @keyframes bmfade{from{opacity:.25}to{opacity:1}}
+  .subtabs{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 16px;}
+  .subtab{border:1px solid var(--line); background:#fff; color:var(--muted); border-radius:18px; padding:6px 18px; font-size:13px; font-weight:600; cursor:pointer;}
+  .subtab:hover:not(.on){background:var(--soft); color:var(--ink);}
+  .subpanel[hidden]{display:none;}
+  .subpanel{animation:bmfade .18s ease;}
+  tr.rowhi td{background:#fdf3e0 !important; border-top:2px solid var(--accent) !important; border-bottom:2px solid var(--accent) !important;}
+  tr.rowhi td:first-child{border-left:2px solid var(--accent) !important;}
+  tr.rowhi td:last-child{border-right:2px solid var(--accent) !important;}
+  .ltoggle{background:none; border:none; color:var(--accent); cursor:pointer; font-size:11.5px; padding:2px 0 0; font-weight:600;}
+  .lsub>td{background:#faf7f7; padding:4px 12px 12px;}
+  .layertbl{font-size:11.5px;} .layertbl th,.layertbl td{padding:5px 7px;}
+  .chartbox svg .pt{cursor:pointer;}
+  details.rawtbl{margin:12px 0 4px;}
+  details.rawtbl summary{cursor:pointer; font-size:13px; font-weight:600; color:var(--accent);}
+  .rawsub td{background:#faf7f7 !important; border-top:2px solid var(--accent);}
+  svg text{font-family:inherit;}
+  @media(max-width:820px){.dualgrid{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<header>
-  <div class="container">
-    <h1>Battery Manufacturing Workforce Outlook</h1>
-    <div class="subtitle">Volta Foundation &middot; 2026 State of Industry &middot; <span class="status-badge draft">Draft</span></div>
-  </div>
-</header>
+<p class="sub">Cross-site dashboard · data: <code>battman_data.js</code> <span id="bmver"></span></p>
+<h1>Battery Manufacturing Labor Intensity</h1>
+<p class="lede">How many workers each battery plant runs per GWh of yearly output, and how that ratio moves as plants scale. Open a site to see its headcount, output, and labor-intensity detail. The last tab lines up all four sites on one common (&ldquo;normalized&rdquo;) definition. Every point carries its own source, shown when you select the point.</p>
+<div class="footnote" style="max-width:980px; margin-top:10px">
+  <div><b>Quality tags:</b> <span class="tag t-primary">PRIMARY</span> filing/audited &middot; <span class="tag t-secondary">SECONDARY</span> press &middot; <span class="tag t-derived">DERIVED</span> computed from sources &middot; <span class="tag t-est">ESTIMATE</span> needs an assumption</div>
+  <div style="margin-top:5px"><b>Confidence:</b> <span class="conf c-high">&#9679; High</span> &middot; <span class="conf c-med">&#9679; Med</span> &middot; <span class="conf c-low">&#9679; Low</span></div>
+  <div style="margin-top:5px"><b>Attribute chips</b> on each series show the denominator basis and what the headcount covers (CELL / PACK / UPSTREAM / CONSTR).</div>
+</div>
 
-<nav>
-  <div class="container">
-    <a href="#dashboard" class="active" data-section="dashboard">Dashboard</a>
-    <a href="#report" data-section="report">Report</a>
-    <a href="#sources" data-section="sources">Data Sources</a>
-    <a href="#methodology" data-section="methodology">Methodology</a>
-  </div>
-</nav>
+<nav class="tabs" id="topTabs" role="tablist"></nav>
 
-<main>
+<section class="tabpanel" id="site-catl"></section>
+<section class="tabpanel" id="site-pena" hidden></section>
+<section class="tabpanel" id="site-wro" hidden></section>
+<section class="tabpanel" id="site-mi" hidden></section>
+<section class="tabpanel" id="tab-compare" hidden></section>
 
-  <!-- ===================== DASHBOARD SECTION ===================== -->
-  <div id="dashboard" class="section active">
+<p class="footnote" style="margin-top:30px; border-top:1px solid var(--line); padding-top:12px; max-width:980px">
+Every value lives in <code>battman_data.js</code> (single source of truth) and is drawn here by <code>battman_shared.js</code>. Keep the three files together in this folder. Ratios, derived produced-GWh figures, utilization estimates and fitted curves are analyst computations from the sourced inputs and are labeled as such. Fit parameters are computed numerically (SciPy) on exactly the plotted points. Annotations work offline; source links require internet.
+</p>
 
-    <div class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-value" id="metric-steady-state">~80-140</div>
-        <div class="metric-label">Workers per GWh (steady-state range)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="metric-ramp-up">400+</div>
-        <div class="metric-label">Workers per GWh (peak ramp-up)</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="metric-global-2035">—</div>
-        <div class="metric-label">Projected global workforce 2035</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-value" id="metric-global-2050">—</div>
-        <div class="metric-label">Projected global workforce 2050</div>
-      </div>
+</div>
+<script src="battman_data.js"></script>
+<script src="battman_shared.js"></script>
+<script>
+// ===== DASHBOARD ENGINE (presentation only — all data in battman_data.js) =====
+const {SRC, START, INTENSITY, FITS, SITES, RECON} = window.BM;
+const {esc, fmtV, srcLinks, srcNames, qClass, cClass, bmChips} = window.BMH;
+document.getElementById("bmver").textContent = "v"+window.BM.VERSION+" · updated "+window.BM.UPDATED;
+
+const AFTER     = (RECON && RECON.viz && RECON.viz.after) || [];
+const AFTERFITS = (RECON && RECON.viz && RECON.viz.afterFits) || [];
+const LADDERS   = (RECON && RECON.ladders) || [];
+const seriesById = id => INTENSITY.find(s=>s.id===id) || AFTER.find(s=>s.id===id);
+const SITE_SHORT = {catl:"CATL", pena:"PENA Nevada", wro:"LGES Wrocław", mi:"LGES Michigan"};
+// concise legend labels (the full series labels are too long for a chart key)
+const LEG = {
+  catl_total:"Total employees ÷ GWh produced",
+  catl_prod:"Production personnel ÷ GWh produced",
+  catl_adj_total:"Battery-business employees ÷ GWh produced",
+  catl_adj_prod:"Battery-business production ÷ GWh produced",
+  pena:"Audited workers ÷ GWh produced",
+  pena_constr:"Workers + construction ÷ GWh produced",
+  wro_ent:"LGES payroll ÷ GWh produced",
+  wro_site:"Whole campus ÷ GWh produced",
+  mi_name:"Workers ÷ capacity (GWh)",
+  mi_prod:"Workers ÷ estimated GWh produced",
+  h1_catl:"Normalized: cell-only permanent workers ÷ GWh produced",
+  h1_pena:"Normalized: permanent workers ÷ GWh produced",
+  h1_wro:"Normalized: permanent payroll ÷ GWh produced"
+};
+// CATL intensity display order: broad → narrow, mirroring the headcount layers ①→④
+const ORD = {catl_total:1, catl_adj_total:2, catl_prod:3, catl_adj_prod:4};
+const bySiteOrd = a => a.sort((x,y)=>(ORD[x.id]||0)-(ORD[y.id]||0));
+
+function niceTicks(min,max,n){ const span=max-min, step0=span/Math.max(n,1), mag=Math.pow(10,Math.floor(Math.log10(step0)));
+  let step=mag; for(const m of [1,2,2.5,5,10]){ if(step0<=m*mag){step=m*mag;break;} }
+  const t=[]; for(let v=Math.ceil(min/step)*step; v<=max+1e-9; v+=step) t.push(Math.round(v*1000)/1000); return t;}
+
+// ---------- generic SVG chart ----------
+function mkChart(box, cfg){
+  const W=cfg.w||1120, H=cfg.h||440;
+  const xMin=cfg.xMin, xMax=cfg.xMax, yMin=cfg.yMin??0;
+  let yMax=cfg.yMax;
+  if(yMax==null){ yMax=0;
+    (cfg.series||[]).forEach(s=>s.pts.forEach(p=>{yMax=Math.max(yMax,p.err?p.err[1]:p.y);}));
+    (cfg.curves||[]).forEach(c=>c.pts.forEach(p=>{yMax=Math.max(yMax,p[1]);}));
+    (cfg.hlines||[]).forEach(h=>{yMax=Math.max(yMax,h.y);});
+    yMax*=1.12; if(yMax===0)yMax=1;}
+  const yt=niceTicks(yMin,yMax,5), xt=cfg.xTicks||niceTicks(xMin,xMax,8);
+  const yNumW=Math.max(...yt.map(v=>String(fmtV(v)).length))*6.2;
+  const P={l:Math.round(Math.max(52, yNumW+(cfg.yLabel?48:16))), r:cfg.rPad||120, t:16, b:40};
+  const sx=x=>P.l+(x-xMin)/(xMax-xMin)*(W-P.l-P.r);
+  const sy=y=>H-P.b-(y-yMin)/(yMax-yMin)*(H-P.t-P.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">`;
+  yt.forEach(v=>{g+=`<text x="${P.l-10}" y="${sy(v)+4}" font-size="11" fill="#777" text-anchor="end">${fmtV(v)}</text>`;});
+  xt.forEach(v=>{g+=`<line x1="${sx(v)}" y1="${H-P.b}" x2="${sx(v)}" y2="${H-P.b+4}" stroke="#999"/>`+
+    `<text x="${sx(v)}" y="${H-P.b+18}" font-size="11" fill="#777" text-anchor="middle">${cfg.xTickFmt?cfg.xTickFmt(v):v}</text>`;});
+  g+=`<rect x="${P.l}" y="${P.t}" width="${W-P.r-P.l}" height="${H-P.b-P.t}" fill="none" stroke="#999"/>`;
+  if(cfg.yLabel) g+=`<text transform="translate(18 ${(P.t+H-P.b)/2}) rotate(-90)" font-size="11.5" fill="#555" text-anchor="middle">${esc(cfg.yLabel)}</text>`;
+  if(cfg.xLabel) g+=`<text x="${(P.l+W-P.r)/2}" y="${H-6}" font-size="11.5" fill="#555" text-anchor="middle">${esc(cfg.xLabel)}</text>`;
+  (cfg.hlines||[]).forEach(h=>{g+=`<line x1="${P.l}" y1="${sy(h.y)}" x2="${W-P.r}" y2="${sy(h.y)}" stroke="${h.hex||"#888"}" stroke-dasharray="${h.dash||"6,4"}" stroke-width="1.3"/>`+
+    (h.label?`<text x="${W-P.r+5}" y="${sy(h.y)+4}" font-size="10.5" fill="${h.hex||"#666"}">${esc(h.label)}</text>`:"");});
+  (cfg.curves||[]).forEach(c=>{
+    const d=c.pts.filter(p=>p[0]>=xMin&&p[0]<=xMax).map((p,i)=>(i?"L":"M")+sx(p[0]).toFixed(1)+" "+sy(Math.min(p[1],yMax)).toFixed(1)).join(" ");
+    if(d) g+=`<path d="${d}" fill="none" stroke="${c.hex}" stroke-width="1.6" stroke-dasharray="${c.dash||"7,4"}" opacity="0.75"/>`;
+    if(c.endLabel){const lp=c.pts[c.pts.length-1]; if(lp[0]>=xMin&&lp[0]<=xMax) g+=`<text x="${W-P.r+5}" y="${sy(lp[1])+4}" font-size="10.5" font-weight="600" fill="${c.hex}">${esc(c.endLabel)}</text>`;}
+  });
+  const metas=[]; let mi=0;
+  (cfg.series||[]).forEach(s=>{
+    const pts=[...s.pts].sort((a,b)=>a.x-b.x);
+    pts.forEach(p=>{
+      if(p.err) g+=`<line x1="${sx(p.x)}" y1="${sy(p.err[0])}" x2="${sx(p.x)}" y2="${sy(p.err[1])}" stroke="${s.hex}" stroke-width="1.2" opacity="0.55"/>`+
+        `<line x1="${sx(p.x)-4}" y1="${sy(p.err[0])}" x2="${sx(p.x)+4}" y2="${sy(p.err[0])}" stroke="${s.hex}" stroke-width="1.2" opacity="0.55"/>`+
+        `<line x1="${sx(p.x)-4}" y1="${sy(p.err[1])}" x2="${sx(p.x)+4}" y2="${sy(p.err[1])}" stroke="${s.hex}" stroke-width="1.2" opacity="0.55"/>`;
+      const fill=s.open?"#fff":s.hex, stroke=s.hex;
+      if(s.marker==="square") g+=`<rect class="pt" data-mi="${mi}" x="${sx(p.x)-5}" y="${sy(p.y)-5}" width="10" height="10" fill="${fill}" stroke="${stroke}" stroke-width="2" style="cursor:pointer"/>`;
+      else g+=`<circle class="pt" data-mi="${mi}" cx="${sx(p.x)}" cy="${sy(p.y)}" r="5.5" fill="${fill}" stroke="${stroke}" stroke-width="2" style="cursor:pointer"/>`;
+      metas[mi++]=p.meta;});
+  });
+  g+="</svg>";
+  const tip=box.querySelector(".tooltip")||(()=>{const d=document.createElement("div");d.className="tooltip";box.appendChild(d);return d;})();
+  const holder=box.querySelector(".svgholder")||(()=>{const d=document.createElement("div");d.className="svgholder";box.insertBefore(d,tip);return d;})();
+  holder.innerHTML=g;
+  // legend (key of what is actually plotted) — sits above the chart
+  let legHost=box.querySelector(".chartlegend");
+  if(cfg.legend&&cfg.legend.length){
+    if(!legHost){legHost=document.createElement("div");legHost.className="chartlegend";box.insertBefore(legHost,box.firstChild);}
+    legHost.innerHTML=cfg.legend.map(e=>{
+      const mk=e.marker==="square"
+        ? `<rect x="6" y="2" width="9" height="9" fill="${e.open?"#fff":e.hex}" stroke="${e.hex}" stroke-width="2"/>`
+        : `<circle cx="10.5" cy="6.5" r="4.5" fill="${e.open?"#fff":e.hex}" stroke="${e.hex}" stroke-width="2"/>`;
+      const line=e.fit?`<line x1="1" y1="6.5" x2="20" y2="6.5" stroke="${e.hex}" stroke-width="1.6" stroke-dasharray="4,3" opacity="0.8"/>`:"";
+      return `<span class="legent"><svg width="21" height="13">${line}${mk}</svg>${esc(e.label)}</span>`;
+    }).join("")+(cfg.legend.some(e=>e.fit)?`<span class="legent" style="color:#777"><svg width="21" height="13"><line x1="1" y1="6.5" x2="20" y2="6.5" stroke="#777" stroke-width="1.6" stroke-dasharray="4,3"/></svg>dashed = fitted long-run projection</span>`:"");
+  } else if(legHost){ legHost.remove(); }
+  holder.querySelectorAll(".pt").forEach(el=>{
+    const m=metas[+el.dataset.mi]; if(!m)return;
+    el.addEventListener("mouseenter",()=>{
+      tip.innerHTML=`<div class="tt-title">${esc(m.title)}</div><div>${esc(m.valStr)}</div>`+
+        `<div class="tt-q">${esc(m.q||"")} · ${esc(m.c||"")} confidence</div>`+
+        (m.srcShort?`<div class="tt-q">Source: ${esc(m.srcShort)}</div>`:"")+`<div class="tt-q" style="margin-top:3px">${cfg.rowScope?"Click to highlight its row below":"Click for full annotation"}</div>`;
+      const br=box.getBoundingClientRect(), er=el.getBoundingClientRect();
+      tip.style.display="block";
+      let lx=er.left-br.left+14, ly=er.top-br.top-10;
+      if(lx+330>br.width) lx=Math.max(4,er.left-br.left-330);
+      tip.style.left=lx+"px"; tip.style.top=Math.max(2,ly)+"px";});
+    el.addEventListener("mouseleave",()=>{tip.style.display="none";});
+    el.addEventListener("click",()=>{
+      if(cfg.rowScope && m.rowKey){
+        cfg.rowScope.querySelectorAll("tr.rowhi").forEach(r=>r.classList.remove("rowhi"));
+        const row=cfg.rowScope.querySelector('tr[data-rowkey="'+m.rowKey+'"]');
+        if(row){ const d=row.closest("details"); if(d) d.open=true; row.classList.add("rowhi"); row.scrollIntoView({behavior:"smooth",block:"center"}); }
+      } else if(cfg.detailEl){ cfg.detailEl.innerHTML=m.detailHTML; cfg.detailEl.scrollIntoView({behavior:"smooth",block:"nearest"}); }
+    });
+  });
+}
+
+// ---------- detail annotations ----------
+function intensityDetail(s,p){
+  const yr=p.yr||String(p.year);
+  return `<h4>${esc(s.label)} — ${esc(yr)}</h4>
+  <div class="d-row">${bmChips(s.attrs)}</div>
+  <div class="d-row"><span class="d-k">Value</span><b>${esc(p.disp)} workers / GWh</b>${p.err?` <span class="footnote">(band ${p.err[0]}–${p.err[1]})</span>`:""} <span class="tag ${qClass(p.q)}">${esc(p.q)}</span> <span class="conf ${cClass(p.c)}">● ${esc(p.c)}</span></div>
+  <div class="d-row"><span class="d-k">Workers (top)</span>${esc(p.num)} — ${srcLinks(p.numSrc)}</div>
+  <div class="d-row"><span class="d-k">GWh (bottom)</span>${esc(p.den)} — ${srcLinks(p.denSrc)}</div>
+  <div class="d-row"><span class="d-k">How it's computed &amp; caveats</span>${esc(p.note)}</div>`;
+}
+
+// ---------- series/fit/table builders ----------
+function prepSeries(s,o){ o=o||{};
+  return {hex:s.colorHex, dash:s.dash, open:o.fill?false:(o.open?true:s.open), marker:s.marker, line:false,
+    pts:s.pts.map(p=>({x:o.age?p.t:p.year, y:p.v, err:p.err,
+      meta:{title:(o.prefix||"")+s.label, valStr:`${p.disp} workers/GWh — ${p.yr||p.year}`, q:p.q, c:p.c, srcShort:srcNames(p.numSrc), rowKey:s.id, detailHTML:intensityDetail(s,p)}}))}; }
+function prepFit(f,age){ if(!f||f.type==="none") return null;
+  const def=seriesById(f.series)||{}; const startY=(START[def.siteKey]||{y:2017}).y;
+  const arr=[]; const tEnd=age?Math.min(f.t1,15.2):Math.min(f.t1,2030-startY);
+  for(let t=f.t0;t<=tEnd+1e-9;t+=0.1){const y=f.type==="exp"?f.Linf+f.A*Math.exp(-f.k*t):f.Linf; arr.push([age?t:startY+t,y]);}
+  return {hex:f.colorHex, dash:f.dash||"7,4", endLabel:f.asym, pts:arr}; }
+function drawChart(box,detailEl,seriesArr,curveArr,opts){ opts=opts||{};
+  const age=opts.age, xMin=age?4:2018.4, xMax=age?15.4:2030.2;
+  box.querySelector(".svgholder")?.remove();
+  mkChart(box,{w:opts.w||1120, h:opts.h||400, xMin, xMax, yMax:opts.yMax, series:seriesArr, curves:(curveArr||[]).filter(Boolean), hlines:opts.hlines||[], detailEl, legend:opts.legend, rowScope:opts.rowScope,
+    yLabel:"Workers per GWh produced (per year)",
+    xLabel:opts.xLabel||(age?"years since production start":"calendar year (FY points at fiscal mid-point)"),
+    xTicks:age?[4,5,6,7,8,9,10,11,12,13,14,15]:[2019,2020,2021,2022,2023,2024,2025,2026,2027,2028,2029,2030],
+    xTickFmt:v=>age?v+"y":String(v)}); }
+
+function intensityTableHTML(list){
+  let h=`<table><thead><tr><th>Year</th><th class="num">Workers/GWh</th><th>Who's counted (top)</th><th>What GWh means (bottom)</th><th>Quality</th><th>Conf.</th><th>Note</th></tr></thead><tbody>`;
+  list.forEach(s=>{
+    h+=`<tr class="rawsub"><td colspan="7"><b style="color:${s.colorHex}">${esc(s.label)}</b><br>${bmChips(s.attrs)}</td></tr>`;
+    s.pts.forEach(p=>{ h+=`<tr><td>${esc(p.yr||p.year)}</td><td class="num"><b>${esc(p.disp)}</b>${p.err?`<br><span class="footnote">(${p.err[0]}–${p.err[1]})</span>`:""}</td>`+
+      `<td>${esc(p.num)}<br><span class="footnote">${srcLinks(p.numSrc)}</span></td>`+
+      `<td>${esc(p.den)}<br><span class="footnote">${srcLinks(p.denSrc)}</span></td>`+
+      `<td><span class="tag ${qClass(p.q)}">${esc(p.q)}</span></td><td><span class="conf ${cClass(p.c)}">● ${esc(p.c)}</span></td>`+
+      `<td class="footnote">${esc(p.note||"")}</td></tr>`; });
+  });
+  return h+`</tbody></table>`;
+}
+function fitsTableHTML(fits){
+  let h=`<table><thead><tr><th>Series</th><th>Years fitted</th><th class="num">Long-run level</th><th class="num">k /yr</th><th class="num">R²</th><th>Status &amp; caveats</th></tr></thead><tbody>`;
+  fits.forEach(f=>{ const s=seriesById(f.series)||{label:f.series,colorHex:"#333"};
+    h+=`<tr><td style="color:${s.colorHex}"><b>${esc(s.label)}</b></td><td>${esc(f.wnd||"")}</td>`+
+      `<td class="num"><b>${esc(f.dispL||(f.Linf!=null?Math.round(f.Linf):"—"))}</b></td>`+
+      `<td class="num">${f.type==="exp"?(f.kFixed?`(${f.k})`:f.k):"—"}</td><td class="num">${f.r2!=null?f.r2:"—"}</td>`+
+      `<td class="footnote">${esc(f.note||"")}</td></tr>`; });
+  return h+`</tbody></table><p class="footnote">Curve: L(t) = long-run level + A·e<sup>−k·t</sup>, where t = years since production start. Fitted by least squares on the plotted points.</p>`;
+}
+function biasTableHTML(list){
+  let h=`<table><thead><tr><th style="width:36%">Series &amp; what it measures</th><th>Known bias vs. the ideal (all cell-plant workers ÷ GWh produced)</th><th>Confidence</th></tr></thead><tbody>`;
+  list.forEach(s=>{ if(!s.mx)return; h+=`<tr><td><b style="color:${s.colorHex}">${esc(s.label)}</b><br>${bmChips(s.attrs)}</td><td class="footnote">${esc(s.mx.bias)}</td><td><span class="conf ${cClass(s.mx.conf)}">● ${esc(s.mx.conf)}</span><br><span class="footnote">${esc(s.mx.confNote)}</span></td></tr>`; });
+  return h+`</tbody></table>`;
+}
+// combined: what each series measures + its bias + its fitted long-run level, one row per series
+function numDenText(s){
+  const a=s.attrs||{};
+  const den={
+    "produced-disclosed":"GWh produced (reported in the annual report)",
+    "produced-derived":"GWh produced (derived from cumulative cell counts)",
+    "produced-estimated":"GWh produced (estimated as capacity × utilization)",
+    "nameplate":"GWh nameplate capacity — installed capacity, not actual output",
+    "nameplate-target":"GWh target capacity — a company target, not an actual"
+  }[a.den]||"GWh";
+  let cov="";
+  if(a.cell&&a.pack===true) cov="covers cell manufacturing + module/pack assembly";
+  else if(a.cell&&a.pack===false) cov="covers cell manufacturing only (no module/pack)";
+  else if(a.cell&&typeof a.pack==="string") cov="covers cell manufacturing ("+esc(a.pack)+" for module/pack)";
+  const fn=a.functions==="all"?"all job functions (production + support)":"production workers only";
+  const extra=[];
+  if(typeof a.upstream==="string") extra.push("upstream materials "+esc(a.upstream));
+  else if(a.upstream===true) extra.push("includes upstream materials");
+  if(a.construction&&a.construction!==false) extra.push("includes construction crews");
+  const num=[esc(a.hc||""), fn, cov, extra.join("; ")].filter(Boolean).join("; ");
+  return {num, den:esc(den)};
+}
+function seriesTableHTML(list, fits, ladder){
+  let h=`<table><thead><tr><th style="width:22%">Series</th><th>What's counted — numerator ÷ denominator</th><th class="num">Long-run level</th><th>Confidence</th></tr></thead><tbody>`;
+  list.forEach(s=>{ if(!s.mx)return;
+    const f=fits.find(x=>x.series===s.id);
+    const isNorm=/^h1_/.test(s.id);
+    const glyph=isNorm?"■":(s.marker==="square"?"■":(s.open?"○":"●"));
+    const nd=numDenText(s);
+    const lid="lsub_"+s.siteKey;
+    const tog=(isNorm&&ladder)?`<br><button type="button" class="ltoggle" data-lsub="${lid}">▸ how it's derived</button>`:"";
+    h+=`<tr data-rowkey="${s.id}"><td><span class="tswatch" style="color:${s.colorHex}">${glyph}</span><b style="color:${s.colorHex}">${esc(LEG[s.id]||s.label)}</b>${tog}</td>`+
+      `<td class="footnote"><b>Numerator:</b> ${nd.num}.<br><b>Denominator:</b> ${nd.den}.</td>`+
+      `<td class="num">${f?`<b>${esc(f.dispL||(f.Linf!=null?Math.round(f.Linf):"—"))}</b><br><span class="footnote">${esc(f.wnd||"")}</span>`:"—"}</td>`+
+      `<td><span class="conf ${cClass(s.mx.conf)}">● ${esc(s.mx.conf)}</span><br><span class="footnote">${esc(s.mx.confNote)}</span></td></tr>`;
+    if(isNorm&&ladder) h+=`<tr class="lsub" id="${lid}" style="display:none"><td colspan="4"><div class="lsubwrap"><p class="mininote" style="margin:4px 0">From the reported ratio down to this normalized long-run level, one adjustment per row (value shown for 2024, and 2025 where relevant):</p>${ladderTableHTML(ladder)}</div></td></tr>`;
+  });
+  return h+`</tbody></table><p class="footnote">Long-run level is where the fitted dashed curve settles. Click a point on the chart to highlight its row; use "how it's derived" on the ■ row for the normalization steps.</p>`;
+}
+function ladderTableHTML(L){
+  let h=`<table><thead><tr><th style="width:22%">Step</th><th>Value after this step (workers/GWh)</th><th>How it's computed &amp; sources</th><th style="width:24%">Assumption</th></tr></thead><tbody>`;
+  L.steps.forEach(s=>{ const last=s.label.indexOf("Normalized result")===0;
+    h+=`<tr${last?' style="font-weight:600;background:#f6ecec"':''}><td><b>${esc(s.label)}</b></td><td class="num"><b>${esc(s.val)}</b></td>`+
+      `<td class="footnote">${esc(s.how)}${(s.src&&s.src.length)?`<br>${srcLinks(s.src)}`:""}</td>`+
+      `<td class="footnote">${esc(s.assume||"—")}</td></tr>`; });
+  return h+`</tbody></table>`;
+}
+function summaryTableHTML(){ const S=RECON.summary; let h=`<table><thead><tr>${S.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>`;
+  S.rows.forEach(r=>{ h+=`<tr>${r.map((c,i)=>`<td${i===0?' style="font-weight:600"':' class="footnote"'}>${esc(c)}</td>`).join("")}</tr>`; });
+  return h+`</tbody></table>`; }
+function sensTableHTML(){ const S=RECON.sens; let h=`<table><thead><tr>${S.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>`;
+  S.rows.forEach(r=>{ h+=`<tr><td style="font-weight:600">${esc(r[0])}</td><td class="footnote">${esc(r[1])}${(r[2]&&r[2].length)?`<br>${srcLinks(r[2])}`:""}</td><td class="footnote">${esc(r[3])}</td></tr>`; });
+  return h+`</tbody></table><p class="footnote"><b>${esc(S.verdict)}</b></p>`; }
+function supportingHTML(site){ if(!site.extraRows||!site.extraRows.length) return "";
+  const rows=site.extraRows.map(r=>`<tr><td>${esc(r.yr)}</td><td>${esc(r.metric)}</td><td class="num">${esc(r.val)}</td><td><span class="tag ${qClass(r.q)}">${esc(r.q)}</span></td><td><span class="conf ${cClass(r.c)}">● ${esc(r.c)}</span></td><td>${srcLinks(r.src)||"—"}</td><td class="footnote">${esc(r.note||"")}</td></tr>`).join("");
+  return `<details class="rawtbl"><summary>Supporting figures</summary><table><thead><tr><th>Period</th><th>Metric</th><th>Value</th><th>Quality</th><th>Conf.</th><th>Source(s)</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+}
+
+// ---------- headcount / output charts (per-site small multiples) ----------
+function splitSeries(chart,hex){
+  const s1=chart.pts.filter(p=>!p.series2&&!p.cmp), s2=chart.pts.filter(p=>p.series2&&!p.cmp), s3=chart.pts.filter(p=>p.cmp), out=[];
+  if(s1.length) out.push({hex,marker:"circle",line:false,pts:s1,primary:true});
+  if(s2.length) out.push({hex,marker:"circle",open:true,dash:"5,4",line:false,pts:s2});
+  if(s3.length) out.push({hex,marker:"square",open:true,line:false,pts:s3});
+  return out;}
+function siteRawTableHTML(site, metricKeys){
+  let rows="";
+  metricKeys.forEach(k=>site.charts[k].pts.forEach((p,i)=>{
+    const u=site.charts[k].unit, dv=String(p.disp), valCell=dv.includes(u)?dv:dv+" "+u;
+    rows+=`<tr data-rowkey="${k}#${i}"><td>${esc(p.year)}</td><td>${esc(p.lbl)}</td><td class="num">${esc(valCell)}</td>`+
+      `<td><span class="tag ${qClass(p.q)}">${esc(p.q)}</span></td><td><span class="conf ${cClass(p.c)}">● ${esc(p.c)}</span></td>`+
+      `<td>${srcLinks(p.src)||"—"}</td><td class="footnote">${esc(p.note||"")}</td></tr>`;
+  }));
+  return `<table><thead><tr><th>Year</th><th>Metric</th><th>Value</th><th>Quality</th><th>Conf.</th><th>Source(s)</th><th>Note</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function mkSiteMetricChart(el, site, metricKey, rowScope, yMaxPct){
+  const chart=site.charts[metricKey];
+  const years=chart.pts.map(p=>p.year);
+  const xMin=Math.floor(Math.min(...years))-0.6, xMax=Math.ceil(Math.max(...years))+0.6;
+  const series=splitSeries(chart,site.colorHex).map(g=>({...g,
+    pts:g.pts.map(p=>({x:p.year,y:p.v,err:p.err,meta:{title:`${site.name} — ${p.lbl}`,valStr:`${String(p.disp).includes(chart.unit)?p.disp:p.disp+" "+chart.unit} — ${p.year}`,q:p.q,c:p.c,srcShort:srcNames(p.src),rowKey:metricKey+"#"+chart.pts.indexOf(p)}}))}));
+  mkChart(el,{w:420,h:250,rPad:14,xMin,xMax,yMax:yMaxPct?105:null,series,rowScope,yLabel:chart.unit.charAt(0).toUpperCase()+chart.unit.slice(1),
+    xTicks:niceTicks(xMin,xMax,4).filter(Number.isInteger), xTickFmt:v=>String(v)});
+}
+function renderCatlLayers(){
+  const L=window.BM.CATL_LAYERS, el=document.getElementById("catlLayers");
+  if(!L||!el) return;
+  const Y=L.years, f=n=>Math.round(n).toLocaleString("en-US"), catl="var(--catl)";
+  const yh=Y.map(y=>`<th class="num">${y.year}</th>`).join("");
+  const cells=(fn)=>Y.map(fn).join("");
+  const rowTotal=cells(y=>`<td class="num"><b>${f(y.total)}</b></td>`);
+  const rowProd=cells(y=>`<td class="num"><b>${f(y.prod)}</b><br><span class="footnote">${(y.prod/y.total*100).toFixed(0)}% of total · <span class="tag ${qClass(y.prodQ)}">${y.prodQ}</span></span></td>`);
+  const rowBatt=cells(y=>`<td class="num"><b>${f(y.prod*y.share)}</b><br><span class="footnote">× ${(y.share*100).toFixed(1)}% share</span></td>`);
+  const rowCell=cells(y=>`<td class="num"><b>${f(y.prod*y.share*L.packLo)}–<br>${f(y.prod*y.share*L.packHi)}</b></td>`);
+  el.innerHTML=`<div style="overflow-x:auto"><table class="layertbl">
+   <thead><tr><th style="min-width:180px">Layer</th>${yh}</tr></thead>
+   <tbody>
+    <tr data-rowkey="layer1"><td><b style="color:${catl}">① Total employees</b> <span class="tag t-primary">reported</span></td>${rowTotal}</tr>
+    <tr data-rowkey="layer2"><td><b style="color:${catl}">② Production personnel (生产人员)</b> <span class="tag t-primary">reported</span></td>${rowProd}</tr>
+    <tr data-rowkey="layer3"><td><b style="color:${catl}">③ Battery-business production</b> = ② × battery-revenue share <span class="tag t-derived">assumption</span></td>${rowBatt}</tr>
+    <tr data-rowkey="layer4"><td><b style="color:${catl}">④ Cell-only workers</b> = ③ × (1 − pack) <span class="tag t-derived">assumption</span></td>${rowCell}</tr>
+   </tbody></table></div>
+   <p class="footnote">Each step removes one non-cell group, and all four are headcounts. <b>①</b> is the consolidated in-service headcount (every business and function, from each year's annual-report employee table). <b>②</b> is reported directly in the same 专业构成 table and drops R&amp;D, sales, finance and admin staff. <b>③</b> keeps only the battery-business share of ②: ${esc(L.shareNote)} <b>④</b> then removes module/pack assembly labor: ${esc(L.packNote)} Source: ${srcLinks(["FARADAY","ICCT"])}. Layers ①–② are reported directly. Layers ③–④ each apply one stated assumption. Dividing Layer ④ by produced GWh (the cell-only intensity) happens in the Labor-intensity sub-tab.</p>`;
+}
+
+// CATL headcount chart: plot all four peel-down layers so it matches the layer table (4 = 4)
+function renderCatlHeadcountChart(el, rowScope){
+  const L=window.BM.CATL_LAYERS; if(!L||!el) return;
+  const cx=(SITES.find(s=>s.id==="catl")||{}).colorHex||"#7f1d1d", Y=L.years, f=n=>Math.round(n).toLocaleString("en-US");
+  const xMin=Math.min(...Y.map(y=>y.year))-0.6, xMax=Math.max(...Y.map(y=>y.year))+0.6;
+  const mk=(marker,open,leg,rowKey,yFn,valFn,q,c,srcFn)=>({hex:cx,marker,open,line:false,leg,
+    pts:Y.map(y=>({x:y.year, y:yFn(y), err:(marker==="square"&&open)?[y.prod*y.share*L.packLo, y.prod*y.share*L.packHi]:null,
+      meta:{title:"CATL — "+leg, valStr:valFn(y)+" employees — "+y.year, q, c, srcShort:srcFn?srcNames(srcFn(y)):"", rowKey}}))});
+  const series=[
+    mk("circle",false,"① Total employees","layer1",y=>y.total,y=>f(y.total),"reported","High",y=>y.totalSrc),
+    mk("circle",true,"② Production personnel","layer2",y=>y.prod,y=>f(y.prod),"reported","High",y=>y.prodSrc),
+    mk("square",false,"③ Battery-business production","layer3",y=>y.prod*y.share,y=>f(y.prod*y.share),"derived","Medium",y=>y.shareSrc),
+    mk("square",true,"④ Cell-only workers","layer4",y=>(y.prod*y.share*L.packLo+y.prod*y.share*L.packHi)/2,y=>f(y.prod*y.share*L.packLo)+"–"+f(y.prod*y.share*L.packHi),"derived range","Medium",null)
+  ];
+  const legend=series.map(s=>({label:s.leg, hex:cx, open:s.open, marker:s.marker, fit:false}));
+  mkChart(el,{w:620,h:320,rPad:14,xMin,xMax,series,rowScope,legend,yLabel:"Employees",xTicks:Y.map(y=>y.year),xTickFmt:v=>String(v)});
+}
+
+// ---------- per-site intensity (raw series chart) ----------
+const SEL={};
+function renderSiteIntensity(site){
+  const box=document.getElementById("int_"+site.id);
+  const raw=bySiteOrd(INTENSITY.filter(s=>s.siteKey===site.id)), on=SEL[site.id];
+  const after=AFTER.find(a=>a.siteKey===site.id);
+  const nf=after?AFTERFITS.find(f=>f.series==="h1_"+site.id):null;
+  const shown=raw.filter(s=>on[s.id]);
+  const normOn=!!(after&&on[after.id]);
+  const sArr=shown.map(s=>prepSeries(s,{}));
+  if(normOn) sArr.push(prepSeries({...after,marker:"square"},{fill:true}));
+  const fArr=FITS.filter(f=>{const s=INTENSITY.find(x=>x.id===f.series);return s&&s.siteKey===site.id&&on[f.series];}).map(f=>prepFit(f,false));
+  if(normOn&&nf) fArr.push(prepFit(nf,false));
+  const legend=[
+    ...shown.map(s=>({label:LEG[s.id]||s.label, hex:s.colorHex, open:!!s.open, marker:s.marker, fit:FITS.some(f=>f.series===s.id)})),
+    ...(normOn?[{label:LEG[after.id]||after.label, hex:after.colorHex, open:false, marker:"square", fit:!!nf}]:[])
+  ];
+  drawChart(box,null,sArr,fArr,{h:400, legend, rowScope:document.getElementById("seriesTbl_"+site.id)});
+}
+function renderSiteNorm(site){
+  const box=document.getElementById("norm_"+site.id); if(!box) return;
+  const before=RECON.viz.beforeIds.map(id=>INTENSITY.find(s=>s.id===id)).filter(s=>s&&s.siteKey===site.id);
+  const after=AFTER.find(a=>a.siteKey===site.id); if(!after) return;
+  const nf=AFTERFITS.find(f=>f.series==="h1_"+site.id);
+  const sArr=[...before.map(s=>prepSeries(s,{open:true,prefix:"[raw] "})), prepSeries(after,{fill:true,prefix:"[normalized] "})];
+  const legend=[
+    ...before.map(s=>({label:"Raw — "+(LEG[s.id]||s.label), hex:s.colorHex, open:true, marker:s.marker, fit:false})),
+    {label:"Normalized (permanent ÷ GWh produced)", hex:after.colorHex, open:false, marker:after.marker, fit:!!nf}
+  ];
+  drawChart(box,document.getElementById("normdet_"+site.id),sArr,[prepFit(nf,false)],{h:340,xLabel:"calendar year", legend});
+}
+
+// ---------- build one site tab ----------
+function renderSiteTab(site){
+  const panel=document.getElementById("site-"+site.id);
+  const cav=site.caveats||{};
+  const raw=bySiteOrd(INTENSITY.filter(s=>s.siteKey===site.id));
+  const rawFits=FITS.filter(f=>{const s=INTENSITY.find(x=>x.id===f.series);return s&&s.siteKey===site.id;});
+  const ladder=LADDERS.find(l=>l.id===site.id);
+  const after=AFTER.find(a=>a.siteKey===site.id);
+  const normFit=AFTERFITS.find(f=>f.series==="h1_"+site.id);
+  SEL[site.id]={}; raw.forEach(s=>SEL[site.id][s.id]=!!s.on);
+  if(after) SEL[site.id][after.id]=true;
+  const togs=after?[...raw,after]:raw;
+  const selHTML=togs.map(s=>{const isNorm=after&&s.id===after.id; const g=isNorm?"■":(s.marker==="square"?"■":(s.open?"○":"●"));
+    return `<label class="tog"><input type="checkbox" data-site="${site.id}" data-id="${s.id}" ${SEL[site.id][s.id]?"checked":""}> <span class="tswatch" style="color:${s.colorHex}">${g}</span>${esc(LEG[s.id]||s.label)}</label>`;}).join("");
+
+  const hcPts=site.charts.headcount.pts;
+  const primLbls=[...new Set(hcPts.filter(p=>!p.series2&&!p.cmp).map(p=>p.lbl))];
+  const altLbls=[...new Set(hcPts.filter(p=>p.series2&&!p.cmp).map(p=>p.lbl))];
+  const cmpLbls=[...new Set(hcPts.filter(p=>p.cmp).map(p=>p.lbl))];
+  let hcLegend=`● ${primLbls.join(" · ")}`+(altLbls.length?` &nbsp; ○ ${altLbls.join(" · ")}`:"")+(cmpLbls.length?` &nbsp; ▫ ${cmpLbls.join(" · ")}`:"");
+  let hc;
+  if(site.id==="catl"){
+    hc=`<p class="mininote">CATL reports company-wide, so its total is far broader than the cell-plant labor we want. The chart and table peel it down to cell-only workers in four layers: ①② are reported, ③④ each apply one stated assumption. Hover for a value; click a point to highlight its layer.</p>
+      <div class="chartbox solo" id="hc_${site.id}"><div class="tooltip"></div></div>
+      <div class="sech">The four layers, year by year</div>
+      <div id="catlLayers"></div>`;
+  } else {
+    hc=`<p class="mininote">${hcLegend}. Hover for a value; click a point to highlight its row below.</p>
+      <div class="chartbox solo" id="hc_${site.id}"><div class="tooltip"></div></div>`;
+  }
+  hc+=`<details class="rawtbl" open><summary>All headcount figures</summary><div id="hcRaw_${site.id}"></div></details>`;
+  if(cav.headcount) hc+=`<div class="caveatbox"><b>Headcount caveats</b>${esc(cav.headcount)}</div>`;
+
+  const uP=[...new Set(site.charts.util.pts.filter(p=>!p.series2).map(p=>p.lbl))];
+  const uA=[...new Set(site.charts.util.pts.filter(p=>p.series2).map(p=>p.lbl))];
+  const utilLeg=[uP.length?`● ${uP.join(" · ")}`:"", uA.length?`○ ${uA.join(" · ")}`:""].filter(Boolean).join(" · ")||"—";
+  let out=`<p class="mininote">● produced · ○ capacity. Where output isn't published it is estimated as capacity × utilization (the weakest link). The utilization chart can carry finer intra-year points than the annual output figures.</p>
+    <div class="dualgrid">
+      <div><div class="minihead">Output (GWh/yr) — ● produced · ○ capacity</div><div class="chartbox" id="g_${site.id}"><div class="tooltip"></div></div></div>
+      <div><div class="minihead">Utilization (%) — ${utilLeg}</div><div class="chartbox" id="u_${site.id}"><div class="tooltip"></div></div></div>
     </div>
+    <details class="rawtbl" open><summary>All output &amp; utilization figures</summary><div id="outRaw_${site.id}"></div></details>`;
+  if(cav.output) out+=`<div class="caveatbox"><b>Output caveats</b>${esc(cav.output)}</div>`;
 
-    <!-- View A: Labor Intensity -->
-    <div class="chart-panel">
-      <h3>View A: Labor Intensity Curve</h3>
-      <p class="chart-description">Workers per GWh vs. years since factory start. Each line represents a facility. The dashed curve is the fitted exponential decay model.</p>
-      <div class="chart-container" id="chart-labor-intensity"></div>
+  let it=`<p class="mininote">Every point is <b>workers ÷ GWh produced</b> for that year — the numerator (which workers) over the denominator (which GWh). Circles are the reported ratio.${after?" The filled square is the same site on the normalized basis; the ladder below shows how it is derived.":""} Dashed lines are fitted projections toward a long-run level. Use the toggles to swap in other worker or output definitions. Hover a point for its value, or click it to highlight that series in the table below.</p>
+    <div class="controls"><div class="grp"><b>Show / hide</b> ${selHTML}</div></div>
+    <div class="chartbox" id="int_${site.id}"><div class="tooltip"></div></div>
+    <div class="sech">Series, inputs &amp; long-run level</div><div id="seriesTbl_${site.id}"></div>`;
+  if(ladder){
+    if(site.id==="catl") it+=`<div class="sech">Sensitivity checks</div><div id="sens_catl"></div>`;
+  } else {
+    it+=`<div class="sech">Normalized basis</div><p class="mininote">Michigan has no published produced-GWh figure, so it can't be placed on the normalized basis. Its ratios divide by nameplate capacity or by a single illustrative output estimate, and are shown for context only.</p>`;
+  }
+  it+=supportingHTML(site);
+  if(cav.intensity) it+=`<div class="caveatbox"><b>Labor-intensity caveats</b>${esc(cav.intensity)}</div>`;
+
+  panel.innerHTML=`
+    <nav class="subtabs" data-for="${site.id}">
+      <button class="subtab on" data-sub="headcount">Headcount</button>
+      <button class="subtab" data-sub="output">Output</button>
+      <button class="subtab" data-sub="intensity">Labor intensity</button>
+    </nav>
+    <div class="subhost">
+      <div class="subpanel" data-sub="headcount">${hc}</div>
+      <div class="subpanel" data-sub="output" hidden>${out}</div>
+      <div class="subpanel" data-sub="intensity" hidden>${it}</div>
+    </div>`;
+
+  const hcPanel=panel.querySelector('.subpanel[data-sub="headcount"]'), outPanel=panel.querySelector('.subpanel[data-sub="output"]');
+  if(site.id==="catl") renderCatlHeadcountChart(panel.querySelector("#hc_catl"), hcPanel);
+  else mkSiteMetricChart(panel.querySelector("#hc_"+site.id), site, "headcount", hcPanel);
+  panel.querySelector("#hcRaw_"+site.id).innerHTML=siteRawTableHTML(site,["headcount"]);
+  if(site.id==="catl") renderCatlLayers();
+  mkSiteMetricChart(panel.querySelector("#g_"+site.id), site, "gwh", outPanel);
+  mkSiteMetricChart(panel.querySelector("#u_"+site.id), site, "util", outPanel, true);
+  panel.querySelector("#outRaw_"+site.id).innerHTML=siteRawTableHTML(site,["gwh","util"]);
+  document.getElementById("seriesTbl_"+site.id).innerHTML=seriesTableHTML(after?[...raw,after]:raw, after&&normFit?[...rawFits,normFit]:rawFits, ladder);
+  if(ladder&&site.id==="catl") document.getElementById("sens_catl").innerHTML=sensTableHTML();
+  renderSiteIntensity(site);
+}
+
+// ---------- cross-site comparison tab ----------
+const cmp={age:false, view:"after", bench:false};
+function renderCompareChart(){
+  const box=document.getElementById("cmpChart"), det=document.getElementById("cmpDetail");
+  const beforeDefs=RECON.viz.beforeIds.map(id=>INTENSITY.find(s=>s.id===id)).filter(Boolean);
+  let yTop=0; [...beforeDefs,...AFTER].forEach(s=>s.pts.forEach(p=>{yTop=Math.max(yTop,p.err?p.err[1]:p.v);}));
+  const yMax=yTop*1.12; let sArr,cArr;
+  if(cmp.view==="before"){ sArr=beforeDefs.map(s=>prepSeries(s,{age:cmp.age})); cArr=RECON.viz.beforeFitIds.map(id=>FITS.find(f=>f.id===id)).filter(Boolean).map(f=>prepFit(f,cmp.age)); }
+  else if(cmp.view==="after"){ sArr=AFTER.map(s=>prepSeries(s,{age:cmp.age})); cArr=AFTERFITS.map(f=>prepFit(f,cmp.age)); }
+  else { sArr=[...beforeDefs.map(s=>prepSeries(s,{age:cmp.age,open:true,prefix:"[raw] "})),...AFTER.map(s=>prepSeries(s,{age:cmp.age,fill:true,prefix:"[normalized] "}))]; cArr=AFTERFITS.map(f=>prepFit(f,cmp.age)); }
+  const hl=cmp.bench?[{y:70,hex:"#666",dash:"3,4",label:"Faraday ~70 FTE/GWh (capacity)"}]:[];
+  const vlbl=cmp.view==="before"?"raw comparable series":cmp.view==="after"?"normalized: permanent workers ÷ GWh produced":"raw vs normalized";
+  let legend;
+  if(cmp.view==="before") legend=beforeDefs.map(s=>({label:SITE_SHORT[s.siteKey], hex:s.colorHex, open:!!s.open, marker:s.marker, fit:true}));
+  else if(cmp.view==="after") legend=AFTER.map(s=>({label:SITE_SHORT[s.siteKey], hex:s.colorHex, open:false, marker:s.marker, fit:true}));
+  else legend=[...beforeDefs.map(s=>({label:SITE_SHORT[s.siteKey]+" — raw", hex:s.colorHex, open:true, marker:s.marker, fit:false})),
+               ...AFTER.map(s=>({label:SITE_SHORT[s.siteKey]+" — normalized", hex:s.colorHex, open:false, marker:s.marker, fit:true}))];
+  drawChart(box,det,sArr,cArr,{age:cmp.age,yMax,hlines:hl,h:440,xLabel:vlbl+(cmp.age?" · years since start":" · calendar year"), legend});
+}
+function renderCompareTab(){
+  const panel=document.getElementById("tab-compare");
+  panel.innerHTML=`
+    <p class="mininote" style="max-width:980px; margin-top:14px">The four sites do not measure the same thing, so this tab lines up the labor-intensity series from every site on one chart. Switch between the <b>raw comparable</b> series and the <b>normalized</b> basis (permanent plant workers ÷ GWh produced), which strips out temporary labor, construction, and, for CATL, non-cell business. Michigan has no produced-GWh figure and is not normalized.</p>
+    <div class="controls">
+      <div class="grp"><b>View</b>
+        <button class="btn" data-cmp="before">Raw comparable</button>
+        <button class="btn on" data-cmp="after">Normalized</button>
+        <button class="btn" data-cmp="both">Overlay</button></div>
+      <div class="grp"><b>X-axis</b>
+        <button class="btn on" data-cx="year">Calendar year</button>
+        <button class="btn" data-cx="age">Years since start</button></div>
+      <div class="grp"><b>Benchmark</b>
+        <button class="btn" id="cmpBench">Faraday ~70 FTE/GWh</button></div>
     </div>
+    <div class="chartbox" id="cmpChart"><div class="tooltip"></div></div>
+    <div class="detail" id="cmpDetail"><div class="d-empty">Click a point for its full annotation and, on the normalized view, its adjustment steps.</div></div>
+    <div class="sech">Normalized comparison summary</div><div id="cmpSummary"></div>
+    <p class="footnote" style="max-width:980px">${esc(RECON.capnote)}</p>
+    <p style="max-width:980px; border-top:1px solid var(--line); padding-top:10px"><b>Bottom line:</b> ${esc(RECON.conclusion)}</p>`;
+  document.getElementById("cmpSummary").innerHTML=summaryTableHTML();
+  panel.querySelectorAll('[data-cmp]').forEach(b=>b.addEventListener("click",()=>{cmp.view=b.dataset.cmp; panel.querySelectorAll('[data-cmp]').forEach(x=>x.classList.toggle("on",x===b)); renderCompareChart();}));
+  panel.querySelectorAll('[data-cx]').forEach(b=>b.addEventListener("click",()=>{cmp.age=b.dataset.cx==="age"; panel.querySelectorAll('[data-cx]').forEach(x=>x.classList.toggle("on",x===b)); renderCompareChart();}));
+  document.getElementById("cmpBench").addEventListener("click",e=>{cmp.bench=!cmp.bench; e.target.classList.toggle("on",cmp.bench); renderCompareChart();});
+  renderCompareChart();
+}
 
-    <div style="height: 2rem;"></div>
+// ---------- top tabs + sub-tabs ----------
+function buildTopTabs(){
+  const nav=document.getElementById("topTabs");
+  SITES.forEach((s,i)=>{ const b=document.createElement("button"); b.className="tab"+(i===0?" on":""); b.setAttribute("role","tab"); b.dataset.tab="site-"+s.id; b.textContent=SITE_SHORT[s.id]||s.name; nav.appendChild(b); });
+  const c=document.createElement("button"); c.className="tab"; c.setAttribute("role","tab"); c.dataset.tab="tab-compare"; c.textContent="Cross-site comparison"; nav.appendChild(c);
+}
+function wireTopTabs(){
+  const btns=[...document.querySelectorAll("#topTabs .tab")], panels=[...document.querySelectorAll(".tabpanel")];
+  function show(id){ btns.forEach(b=>{const on=b.dataset.tab===id; b.classList.toggle("on",on); b.setAttribute("aria-selected",on);}); panels.forEach(p=>p.hidden=(p.id!==id)); }
+  btns.forEach(b=>b.addEventListener("click",()=>{show(b.dataset.tab); document.getElementById("topTabs").scrollIntoView({block:"start"});}));
+  show("site-catl");
+}
+function wireSubTabs(){
+  document.querySelectorAll('nav.subtabs[data-for]').forEach(nav=>{
+    const host=nav.nextElementSibling, btns=[...nav.querySelectorAll(".subtab")];
+    const color=(SITES.find(s=>s.id===nav.dataset.for)||{}).colorHex||"var(--accent)";
+    function sel(sub){ btns.forEach(b=>{const on=b.dataset.sub===sub; b.classList.toggle("on",on); b.style.background=on?color:""; b.style.borderColor=on?color:""; b.style.color=on?"#fff":"";});
+      [...host.children].forEach(p=>{p.hidden=(p.dataset.sub!==sub);}); }
+    btns.forEach(b=>b.addEventListener("click",()=>sel(b.dataset.sub)));
+    sel("headcount");
+  });
+}
 
-    <!-- View B: Global Jobs Projection -->
-    <div class="dashboard-grid">
-      <div class="chart-panel">
-        <h3>View B: Cumulative Global Battery Workforce</h3>
-        <p class="chart-description">Projected workforce through 2050 by region, subject to adjustable assumptions.</p>
-        <div class="chart-container" id="chart-global-jobs"></div>
-      </div>
-    </div>
-
-    <div style="height: 1.5rem;"></div>
-
-    <!-- Sensitivity Controls -->
-    <div class="controls-panel">
-      <h3>Sensitivity Controls</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
-
-        <div class="control-group">
-          <label>Scenario</label>
-          <select id="ctrl-scenario">
-            <option value="baseline">Baseline</option>
-            <option value="us_high">US High Growth (IRA continues)</option>
-            <option value="high_automation">High Automation</option>
-          </select>
-        </div>
-
-        <div class="control-group">
-          <label>Base Workers per GWh (steady-state)</label>
-          <input type="range" id="ctrl-workers-per-gwh" min="60" max="200" value="120" step="5">
-          <span class="value-display" id="val-workers-per-gwh">120</span>
-        </div>
-
-        <div class="control-group">
-          <label>Automation Reduction (%/year)</label>
-          <input type="range" id="ctrl-automation" min="0" max="8" value="2" step="0.5">
-          <span class="value-display" id="val-automation">2.0%</span>
-        </div>
-
-        <div class="control-group">
-          <label>Indirect Job Multiplier</label>
-          <input type="range" id="ctrl-multiplier" min="1.0" max="3.0" value="1.8" step="0.1">
-          <span class="value-display" id="val-multiplier">1.8x</span>
-        </div>
-
-        <div class="control-group">
-          <label>US Market Share 2035 (%)</label>
-          <input type="range" id="ctrl-us-share" min="3" max="25" value="10" step="1">
-          <span class="value-display" id="val-us-share">10%</span>
-        </div>
-
-        <div class="control-group">
-          <label>Global GWh Demand 2035</label>
-          <input type="range" id="ctrl-gwh-2035" min="2000" max="8000" value="4500" step="250">
-          <span class="value-display" id="val-gwh-2035">4,500 GWh</span>
-        </div>
-
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ===================== REPORT SECTION ===================== -->
-  <div id="report" class="section">
-
-    <div class="report-section">
-      <h2>1. Executive Summary</h2>
-      <div class="callout">
-        "The battery industry does not have a factory workforce problem &mdash; it has a full industrial workforce problem."
-      </div>
-      <p>This report presents the Volta Foundation's estimate of total workforce required per GWh of battery manufacturing capacity, encompassing direct, indirect, induced, and upstream jobs across the full value chain.</p>
-      <div class="placeholder">
-        Key findings will be populated as primary source data is processed. Current seed data suggests steady-state labor intensity ranges from 80&ndash;140 workers/GWh for direct manufacturing, with peak ramp-up intensities exceeding 400 workers/GWh.
-      </div>
-      <h3>Major Uncertainties</h3>
-      <ul>
-        <li><strong>Automation</strong> &mdash; how increased automation reduces direct labor needs</li>
-        <li><strong>Energy density improvements</strong> &mdash; higher Wh/kg means fewer cells per GWh</li>
-        <li><strong>Manufacturing productivity</strong> &mdash; learning curves and process maturity</li>
-        <li><strong>Alternative storage technologies</strong> &mdash; sodium-ion, solid-state impacts</li>
-      </ul>
-    </div>
-
-    <div class="report-section">
-      <h2>2. Why Workforce Quantification Matters</h2>
-      <p>There is a persistent mismatch between announced battery manufacturing capacity (measured in GWh) and the workforce planning required to build, staff, and sustain those facilities. This gap has consequences for:</p>
-      <ul>
-        <li>Regional competition for skilled labor</li>
-        <li>Infrastructure strain (housing, transportation) in manufacturing corridors</li>
-        <li>Policy design, where subsidies are often tied to job creation targets</li>
-        <li>Public support and political viability of industrial strategy</li>
-      </ul>
-      <h3>Key Questions This Paper Addresses</h3>
-      <ol>
-        <li>How many workers may be needed globally by 2035 and 2050?</li>
-        <li>What share could North America or the U.S. capture?</li>
-        <li>How does automation impact workforce demand?</li>
-        <li>What workforce types and skills will be required?</li>
-      </ol>
-    </div>
-
-    <div class="report-section">
-      <h2>3. Defining the Battery Manufacturing Workforce</h2>
-      <h3>Workforce Categories</h3>
-      <ul>
-        <li><strong>Direct workforce</strong> &mdash; production line operators, equipment technicians, quality control, process engineers</li>
-        <li><strong>Indirect/industrial support</strong> &mdash; maintenance, logistics, safety, management, HR</li>
-        <li><strong>Adjacent operational workforce</strong> &mdash; construction (during build-out), equipment installation, commissioning</li>
-        <li><strong>Upstream</strong> &mdash; mining, materials processing, cathode/anode manufacturing, electrolyte production</li>
-      </ul>
-      <h3>Workforce Across the Value Chain</h3>
-      <div class="placeholder">Detailed value chain workforce mapping &mdash; awaiting primary source data</div>
-      <h3>Ramp-Up vs. Steady-State Labor Needs</h3>
-      <p>Labor intensity peaks during production ramp-up, often exceeding 400 workers per GWh. As production capacity scales and process automation matures, labor intensity declines sharply. Best-in-class steady-state plants approach 80 workers per GWh.</p>
-    </div>
-
-    <div class="report-section">
-      <h2>4. Current State of Workforce Estimates</h2>
-      <h3>Existing Benchmarks</h3>
-      <table style="width:100%; border-collapse:collapse; margin:1rem 0;">
-        <thead>
-          <tr style="border-bottom:2px solid var(--border);">
-            <th style="text-align:left; padding:0.5rem;">Facility</th>
-            <th style="text-align:right; padding:0.5rem;">Workers/GWh</th>
-            <th style="text-align:left; padding:0.5rem;">Phase</th>
-            <th style="text-align:left; padding:0.5rem;">Source</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">CATL (Global)</td>
-            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">143</td>
-            <td style="padding:0.5rem;">Steady-state</td>
-            <td style="padding:0.5rem;">Public filings</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">LGES (Michigan, US)</td>
-            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">108</td>
-            <td style="padding:0.5rem;">Steady-state</td>
-            <td style="padding:0.5rem;">Public filings</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">PENA (Nevada, US)</td>
-            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">137</td>
-            <td style="padding:0.5rem;">Steady-state</td>
-            <td style="padding:0.5rem;">Public filings</td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">LGES (Wroclaw, Poland)</td>
-            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">81</td>
-            <td style="padding:0.5rem;">Steady-state</td>
-            <td style="padding:0.5rem;">Public filings</td>
-          </tr>
-          <tr>
-            <td style="padding:0.5rem;">LGES (Wroclaw, Poland)</td>
-            <td style="text-align:right; padding:0.5rem; font-family:var(--font-mono);">464</td>
-            <td style="padding:0.5rem;">Ramp-up</td>
-            <td style="padding:0.5rem;">Public filings</td>
-          </tr>
-        </tbody>
-      </table>
-      <h3>Global Workforce Projections</h3>
-      <div class="placeholder">Scenario projections for 2035 &amp; 2050 &mdash; see Dashboard View B for interactive exploration</div>
-    </div>
-
-    <div class="report-section">
-      <h2>5. Key Insights &amp; Implications</h2>
-      <h3>Major Findings</h3>
-      <ul>
-        <li>Workforce demand likely remains substantial even with increased automation</li>
-        <li>Maintenance, quality, and technical support roles may become increasingly important as automation increases</li>
-        <li>Regional policy decisions will strongly influence workforce distribution</li>
-      </ul>
-      <h3>Risk of Bottlenecks</h3>
-      <ul>
-        <li>Skilled trades shortage</li>
-        <li>Lack of career planning and good jobs framework</li>
-        <li>Equipment installation delays</li>
-        <li>Logistics constraints</li>
-        <li>Land use and financing constraints</li>
-      </ul>
-      <div class="placeholder">Detailed policy implications &mdash; awaiting primary source analysis</div>
-    </div>
-
-    <div class="report-section">
-      <h2>6. Future Outlook</h2>
-      <div class="placeholder">Committee next steps and future research agenda &mdash; to be developed</div>
-    </div>
-
-  </div>
-
-  <!-- ===================== SOURCES SECTION ===================== -->
-  <div id="sources" class="section">
-    <h2 style="font-size:1.5rem; margin-bottom:1.5rem; color:var(--primary-dark);">Primary Data Sources</h2>
-    <p style="margin-bottom:1.5rem; color:var(--text-secondary);">Each source must be obtained and processed before its data appears in the dashboard. Status is tracked in <code>data/processed/sources.yaml</code>.</p>
-
-    <table style="width:100%; border-collapse:collapse;">
-      <thead>
-        <tr style="border-bottom:2px solid var(--border); text-align:left;">
-          <th style="padding:0.6rem;">#</th>
-          <th style="padding:0.6rem;">Source</th>
-          <th style="padding:0.6rem;">Provided</th>
-          <th style="padding:0.6rem;">Processed</th>
-          <th style="padding:0.6rem;">Notes</th>
-        </tr>
-      </thead>
-      <tbody id="sources-table">
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">1</td><td style="padding:0.5rem;">McKinsey Research</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Industry workforce benchmarks</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">2</td><td style="padding:0.5rem;">Ohio Research</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Regional workforce study</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">3</td><td style="padding:0.5rem;">C2ES Research</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Climate/energy workforce analysis</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">4</td><td style="padding:0.5rem;">EPI Report</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Economic Policy Institute labor data</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">5</td><td style="padding:0.5rem;">GBA Report (2019)</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Global Battery Alliance workforce data</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">6</td><td style="padding:0.5rem;">Argonne/Li-Bridge CAR Report</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Funded workforce study</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">7</td><td style="padding:0.5rem;">Battery Talent Census</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Talent pipeline data</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">8</td><td style="padding:0.5rem;">Battery Business Directory</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Employee counts by company</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">9</td><td style="padding:0.5rem;">Stanford Battery Summit</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Industry outlook</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">10</td><td style="padding:0.5rem;">BNEF EV Outlook</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Key demand forecast for View B</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">11</td><td style="padding:0.5rem;">EV Sales &amp; Charging Through 2035</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Demand planning baseline</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">12</td><td style="padding:0.5rem;">Battery Report 2025 - Talent</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Most recent annual data</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">13</td><td style="padding:0.5rem;">Workplace Demand Studies</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Labor market studies</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">14</td><td style="padding:0.5rem;">Economic Forecasts</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">GDP, employment trends</td>
-        </tr>
-        <tr style="border-bottom:1px solid var(--border);">
-          <td style="padding:0.5rem;">15</td><td style="padding:0.5rem;">EV Labor Intensity Study (Andrew)</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag missing">No</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Primary labor intensity research</td>
-        </tr>
-        <tr>
-          <td style="padding:0.5rem;">16</td><td style="padding:0.5rem;">Committee Insights Paper</td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag active">Yes</span></td>
-          <td style="padding:0.5rem;"><span class="sensitivity-tag active">Yes</span></td>
-          <td style="padding:0.5rem; font-size:0.85rem; color:var(--text-secondary);">Seed data extracted (CATL, LGES, PENA)</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- ===================== METHODOLOGY SECTION ===================== -->
-  <div id="methodology" class="section">
-    <h2 style="font-size:1.5rem; margin-bottom:1.5rem; color:var(--primary-dark);">Methodology</h2>
-
-    <div class="report-section">
-      <h3>Labor Intensity Model (View A)</h3>
-      <p>We model the decline in labor intensity over a factory's lifetime using an exponential decay function:</p>
-      <div class="callout" style="font-family:var(--font-mono); font-size:0.95rem;">
-        workers_per_gwh(t) = A &middot; e<sup>-kt</sup> + C
-      </div>
-      <ul>
-        <li><strong>A</strong> &mdash; initial excess labor intensity during ramp-up (workers/GWh), estimated range: 200&ndash;500</li>
-        <li><strong>k</strong> &mdash; learning/automation rate constant (1/year), estimated range: 0.3&ndash;0.8</li>
-        <li><strong>C</strong> &mdash; asymptotic steady-state labor intensity (workers/GWh), estimated range: 60&ndash;150</li>
-        <li><strong>t</strong> &mdash; years since factory started production</li>
-      </ul>
-      <p>The curve is fit to aggregated data from all available primary sources using nonlinear least squares (scipy.optimize.curve_fit). As more data points are added, the fit and confidence intervals will improve.</p>
-    </div>
-
-    <div class="report-section">
-      <h3>Cumulative Jobs Model (View B)</h3>
-      <p>Total workforce at year <em>y</em> is computed as:</p>
-      <div class="callout" style="font-family:var(--font-mono); font-size:0.95rem;">
-        jobs(y) = GWh_demand(y) &times; workers_per_gwh(y) &times; indirect_multiplier &times; policy_modifier(y)
-      </div>
-      <p>Where:</p>
-      <ul>
-        <li><strong>GWh_demand(y)</strong> &mdash; total global battery demand from demand forecasts</li>
-        <li><strong>workers_per_gwh(y)</strong> &mdash; from View A curve, accounting for automation trajectory</li>
-        <li><strong>indirect_multiplier</strong> &mdash; scales direct jobs to include indirect and induced employment</li>
-        <li><strong>policy_modifier(y)</strong> &mdash; adjusts regional distribution based on policy scenario</li>
-      </ul>
-      <p>Regional breakdown uses market share assumptions adjustable via dashboard controls.</p>
-    </div>
-
-    <div class="report-section">
-      <h3>Data Processing Pipeline</h3>
-      <ol>
-        <li>Raw source files are placed in <code>data/raw/</code></li>
-        <li>Each source is processed to extract quantitative data into CSVs under <code>data/processed/sensitivities/</code></li>
-        <li>Python scripts (<code>scripts/generate_dashboard_data.py</code>) read processed CSVs, perform curve fitting, and output JSON to <code>site/data/</code></li>
-        <li>The dashboard reads JSON data and renders interactive D3.js visualizations</li>
-        <li>GitHub Actions auto-deploys the site on each push</li>
-      </ol>
-    </div>
-
-    <div class="report-section">
-      <h3>Sensitivity Parameters</h3>
-      <table style="width:100%; border-collapse:collapse;">
-        <thead>
-          <tr style="border-bottom:2px solid var(--border); text-align:left;">
-            <th style="padding:0.5rem;">Sensitivity</th>
-            <th style="padding:0.5rem;">Parameter</th>
-            <th style="padding:0.5rem;">Range</th>
-            <th style="padding:0.5rem;">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">Automation level</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">% reduction per year</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">0&ndash;8%</td>
-            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">Energy density</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">Wh/kg (cell level)</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">250&ndash;500</td>
-            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">Market share</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">% by region</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">varies</td>
-            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
-          </tr>
-          <tr style="border-bottom:1px solid var(--border);">
-            <td style="padding:0.5rem;">Manufacturing productivity</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">workers/GWh curve params</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">A, k, C</td>
-            <td style="padding:0.5rem;"><span class="sensitivity-tag active">Seed data</span></td>
-          </tr>
-          <tr>
-            <td style="padding:0.5rem;">Policy scenarios</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">regional multiplier</td>
-            <td style="padding:0.5rem; font-family:var(--font-mono); font-size:0.85rem;">0.7&ndash;1.4</td>
-            <td style="padding:0.5rem;"><span class="sensitivity-tag placeholder">Placeholder</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</main>
-
-<footer>
-  <p>Volta Foundation Workforce Committee &middot; Battery Manufacturing Workforce Outlook &middot; 2026</p>
-  <p style="margin-top:0.25rem;">Data last updated: <span id="last-updated">2026-06-03</span> &middot; <span class="status-badge draft">Draft</span></p>
-</footer>
-
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="js/dashboard.js"></script>
-
+// ---------- init ----------
+buildTopTabs();
+SITES.forEach(renderSiteTab);
+renderCompareTab();
+wireSubTabs();
+wireTopTabs();
+document.addEventListener("change",e=>{
+  const t=e.target;
+  if(t && t.matches && t.matches('input[type=checkbox][data-site]')){ SEL[t.dataset.site][t.dataset.id]=t.checked; renderSiteIntensity(SITES.find(s=>s.id===t.dataset.site)); }
+});
+document.addEventListener("click",e=>{
+  const b=e.target&&e.target.closest?e.target.closest(".ltoggle"):null; if(!b)return;
+  const el=document.getElementById(b.dataset.lsub); if(!el)return;
+  const show=el.style.display==="none"; el.style.display=show?"table-row":"none"; b.textContent=(show?"▾":"▸")+" how it's derived";
+});
+</script>
 </body>
 </html>
