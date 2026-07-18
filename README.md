@@ -18,7 +18,8 @@ The dashboard has five top tabs (four sites + a cross-site comparison); each sit
 | `site/battman_shared.js` | Shared helpers used by the dashboard engine: attribute chips (`bmChips`), HTML-escaping, source-link rendering. No data. |
 | `site/index.html` | The dashboard — presentation/engine only; renders everything from `battman_data.js`. |
 | `verify.mjs` · `invariants.mjs` | Verification harness (jsdom): checks the page renders with 0 console errors, and enforces cross-cutting invariants (legends match plotted series, toggles match table rows, no doubled units, ladders nested, etc.). |
-| `.github/workflows/deploy.yml` | GitHub Pages: static deploy of `site/` on push to `main`. |
+| `package-lock.json` | Committed so CI's `npm ci` installs a reproducible dependency tree. |
+| `.github/workflows/deploy.yml` | CI: runs `npm test` on every push and PR. The Pages deploy job only runs on push to `main`, and only after the test job passes. |
 
 ## Develop
 
@@ -32,7 +33,7 @@ npm test         # runs verify.mjs + invariants.mjs
 ```
 
 - **Edit `site/battman_data.js` only.** Never hardcode numbers into `index.html`.
-- **Deploy:** push to `main` → GitHub Pages auto-deploys `site/`.
+- **Deploy:** push to `main` → CI runs `npm test`; GitHub Pages deploys `site/` only after tests pass. Pull requests run the same tests but never deploy.
 
 ## Data model, update workflow & assumptions
 
