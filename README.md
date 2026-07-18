@@ -1,63 +1,43 @@
-# Battery Manufacturing Workforce Outlook
+# Battery Manufacturing Labor Intensity
 
-**Quantifying Workforce Demand Through 2050**
+Interactive dashboard comparing **workers per GWh** across battery cell plants — CATL, Panasonic Energy of North America (Nevada), and LG Energy Solution (Wrocław & Michigan). Part of the Volta Foundation 2026 State of Industry workforce work.
 
-A collaborative research project by the Volta Foundation Workforce Committee to answer: *How many workers are needed for battery manufacturing?*
+**Live:** https://wengandrew.github.io/batt-workforce/
 
-## About This Project
+## What this is
 
-The battery industry does not have a factory workforce problem — it has a full industrial workforce problem. Current workforce estimates focus narrowly on direct plant jobs, but the true workforce required per GWh of battery production spans direct, indirect, induced, and upstream roles across the entire value chain.
+A single-page **static** dashboard. Every number lives in one file (`site/battman_data.js`) and is rendered live in the browser — **no build step, no server, no data pipeline.** GitHub Pages just serves the `site/` folder.
 
-This repository houses the data, analysis, and interactive tools behind the Volta Foundation's 2026 State of Industry workforce report. Our goal is to produce:
+The dashboard has five top tabs (four sites + a cross-site comparison); each site tab splits into **Headcount / Output / Labor-intensity** sub-tabs. Every chart, table, and the CATL headcount-layer walkthrough render from `window.BM` (loaded from `battman_data.js`), so nothing can silently drift. The front page prints the data version (`VERSION` · `UPDATED`).
 
-1. **A comprehensive report** quantifying total workforce demand per GWh and projecting global battery workforce needs through 2035 and 2050
-2. **An interactive dashboard** that lets stakeholders explore workforce projections under different assumptions about automation, market share, growth rates, and policy scenarios
+## Files
 
-## Live Dashboard & Report
+| File | Role |
+|---|---|
+| `site/battman_data.js` | **Single source of truth.** Sources (SRC), intensity series with per-point annotations + attribute sets, fit parameters (FITS), per-site raw components + supporting figures (SITES, incl. `extraRows`), the CATL headcount-layer decomposition (CATL_LAYERS), and the normalization ladders (RECON). Carries `VERSION` / `UPDATED`. |
+| `site/battman_shared.js` | Shared helpers used by the dashboard engine: attribute chips (`bmChips`), HTML-escaping, source-link rendering. No data. |
+| `site/index.html` | The dashboard — presentation/engine only; renders everything from `battman_data.js`. |
+| `verify.mjs` · `invariants.mjs` | Verification harness (jsdom): checks the page renders with 0 console errors, and enforces cross-cutting invariants (legends match plotted series, toggles match table rows, no doubled units, ladders nested, etc.). |
+| `.github/workflows/deploy.yml` | GitHub Pages: static deploy of `site/` on push to `main`. |
 
-The report and dashboard are deployed via GitHub Pages:
+## Develop
 
-**[View the Dashboard & Report](https://wengandrew.github.io/batt-workforce/)**
+```bash
+# Preview locally (any static server works)
+python -m http.server 8000 --directory site      # → http://localhost:8000
 
-## Key Findings (In Progress)
+# Verify (render + invariants)
+npm install      # dev-only: jsdom
+npm test         # runs verify.mjs + invariants.mjs
+```
 
-- Battery cell manufacturing **labor intensity peaks during production ramp-up**, often exceeding 400 workers per GWh
-- At steady-state production, best-in-class plants approach **80 workers per GWh**
-- Key benchmarks from publicly available data:
-  - CATL (Global): 143 workers/GWh
-  - LGES (Michigan, US): 108 workers/GWh
-  - PENA (Nevada, US): 137 workers/GWh
-  - LGES (Wroclaw, Poland): 81 workers/GWh (steady-state), 464 workers/GWh (ramp-up)
+- **Edit `site/battman_data.js` only.** Never hardcode numbers into `index.html`.
+- **Deploy:** push to `main` → GitHub Pages auto-deploys `site/`.
 
-## Major Uncertainties
+## Data model, update workflow & assumptions
 
-- **Automation**: How much will increased automation reduce direct labor needs?
-- **Energy density improvements**: Higher Wh/kg means fewer cells (and workers) per GWh
-- **Manufacturing productivity**: Learning curves and process maturity
-- **Regional market share**: What fraction of global production will the US, EU, and China each capture?
-- **Policy scenarios**: Subsidies, tariffs, and industrial policy effects on workforce distribution
-
-## Repository Structure
-
-| Directory | Purpose |
-|-----------|---------|
-| `data/raw/` | Primary research source files (PDFs, spreadsheets) |
-| `data/processed/` | Structured data extracted from sources, organized by sensitivity |
-| `site/` | Combined HTML report + interactive D3.js dashboard |
-| `scripts/` | Python scripts for data processing and dashboard generation |
-| `Plan.md` | Living project roadmap and task checklist |
-
-See [CLAUDE.md](CLAUDE.md) for detailed development instructions.
-
-## Contributing
-
-This is a collaborative research effort. To contribute:
-
-1. Provide primary source documents (place in `data/raw/`)
-2. Help extract and validate quantitative data
-3. Review assumptions and sensitivity parameters
-4. Suggest additional data sources or analytical approaches
+See **[CLAUDE.md](CLAUDE.md)** for the attribute schema, the "how to add a data point / refit" workflow, the normalization basis, the CATL headcount layers, and the top-level modeling assumptions.
 
 ## References
 
-Based on the Committee Insights paper: *"2026 State of Industry: How Many Workers Are Needed for Battery Manufacturing?"* — Volta Foundation Workforce Committee.
+Volta Foundation Workforce Committee — *2026 State of Industry: How Many Workers Are Needed for Battery Manufacturing?*

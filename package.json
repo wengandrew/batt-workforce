@@ -1,0 +1,13 @@
+{
+  "name": "batt-workforce",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Battery manufacturing labor-intensity dashboard (Volta Foundation).",
+  "scripts": {
+    "test": "node verify.mjs && node invariants.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}
