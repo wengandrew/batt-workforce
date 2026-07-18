@@ -15,7 +15,8 @@ batt-workforce/
   verify.mjs              # jsdom render test (0 console errors, structure)
   invariants.mjs         # cross-cutting consistency invariants across every tab/site
   package.json           # `npm test` → node verify.mjs && node invariants.mjs (dev dep: jsdom)
-  .github/workflows/deploy.yml  # GitHub Pages: static deploy of site/ on push to main
+  package-lock.json       # committed so CI's `npm ci` is reproducible
+  .github/workflows/deploy.yml  # CI: npm test on every push/PR; deploy job (Pages) only runs after tests pass, on push to main
 ```
 
 ## The golden rule
@@ -47,7 +48,7 @@ The dashboard's numerator÷denominator table is built from these, so keep them a
 2. **Refit if the series changed** — fit `L∞ + A·e^(−k·t)` on exactly the plotted points (or a const plateau) and update the `FITS` entry. Every curve, long-run number, layer table, and ladder follows automatically.
 3. **Verify:** `npm install && npm test`. `verify.mjs` renders the page in jsdom and fails on console errors or `[?]` placeholders; `invariants.mjs` enforces cross-cutting rules across every site/tab. Also recompute any changed ratio from its raw inputs and compare to `disp`/`v`.
 4. **Preview:** `python -m http.server 8000 --directory site`.
-5. **Ship:** commit + push to `main`; Pages auto-deploys.
+5. **Ship:** commit + push. CI (`.github/workflows/deploy.yml`) reruns `npm test` on every push and PR; on `main` the deploy job only runs — and only deploys to Pages — after that test job passes.
 
 ## Normalization (cross-site tab)
 
