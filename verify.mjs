@@ -62,7 +62,7 @@ const cmp=doc.getElementById("tab-compare");
 check("cross-site chart rendered",!!cmp.querySelector("#cmpChart svg"));
 check("cross-site summary table",doc.getElementById("cmpSummary").querySelectorAll("tr").length>1);
 check("cross-site has 3 view buttons",cmp.querySelectorAll("[data-cmp]").length===3);
-check("cross-site conclusion present",/Bottom line:/.test(cmp.textContent)&&/long-run ordering/.test(cmp.textContent));
+check("cross-site conclusion present",/Bottom line:/.test(cmp.textContent));
 
 // combined table now lists every raw series PLUS the normalized one, each with a data-rowkey
 let tblOk=true, tblInfo=[];

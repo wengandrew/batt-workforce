@@ -1,6 +1,6 @@
 /* =====================================================================
    battman_data.js — SINGLE SOURCE OF TRUTH for the BattManf Labor project.
-   Consumed by Battery_Labor_Intensity_Dashboard.html (via battman_shared.js).
+   Consumed by index.html (via battman_shared.js).
    Every number lives here and only here. Edit numbers HERE.
    Attribute schema (attrs) per intensity series:
      den:   "produced-disclosed" | "produced-derived" | "produced-estimated"

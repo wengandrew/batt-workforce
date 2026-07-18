@@ -111,11 +111,11 @@
 
 <nav class="tabs" id="topTabs" role="tablist"></nav>
 
-<section class="tabpanel" id="site-catl"></section>
-<section class="tabpanel" id="site-pena" hidden></section>
-<section class="tabpanel" id="site-wro" hidden></section>
-<section class="tabpanel" id="site-mi" hidden></section>
-<section class="tabpanel" id="tab-compare" hidden></section>
+<section class="tabpanel" id="site-catl" role="tabpanel" aria-labelledby="tabbtn-site-catl"></section>
+<section class="tabpanel" id="site-pena" role="tabpanel" aria-labelledby="tabbtn-site-pena" hidden></section>
+<section class="tabpanel" id="site-wro" role="tabpanel" aria-labelledby="tabbtn-site-wro" hidden></section>
+<section class="tabpanel" id="site-mi" role="tabpanel" aria-labelledby="tabbtn-site-mi" hidden></section>
+<section class="tabpanel" id="tab-compare" role="tabpanel" aria-labelledby="tabbtn-tab-compare" hidden></section>
 
 <p class="footnote" style="margin-top:30px; border-top:1px solid var(--line); padding-top:12px; max-width:980px">
 Every value lives in <code>battman_data.js</code> (single source of truth) and is drawn here by <code>battman_shared.js</code>. Keep the three files together in this folder. Ratios, derived produced-GWh figures, utilization estimates and fitted curves are analyst computations from the sourced inputs and are labeled as such. Fit parameters are computed numerically (SciPy) on exactly the plotted points. Annotations work offline; source links require internet.
@@ -579,12 +579,13 @@ function renderCompareTab(){
 // ---------- top tabs + sub-tabs ----------
 function buildTopTabs(){
   const nav=document.getElementById("topTabs");
-  SITES.forEach((s,i)=>{ const b=document.createElement("button"); b.className="tab"+(i===0?" on":""); b.setAttribute("role","tab"); b.dataset.tab="site-"+s.id; b.textContent=SITE_SHORT[s.id]||s.name; nav.appendChild(b); });
-  const c=document.createElement("button"); c.className="tab"; c.setAttribute("role","tab"); c.dataset.tab="tab-compare"; c.textContent="Cross-site comparison"; nav.appendChild(c);
+  const addTab=(id,label,onDefault)=>{ const b=document.createElement("button"); b.className="tab"+(onDefault?" on":""); b.id="tabbtn-"+id; b.setAttribute("role","tab"); b.setAttribute("aria-controls",id); b.dataset.tab=id; b.textContent=label; nav.appendChild(b); };
+  SITES.forEach((s,i)=>addTab("site-"+s.id, SITE_SHORT[s.id]||s.name, i===0));
+  addTab("tab-compare","Cross-site comparison",false);
 }
 function wireTopTabs(){
   const btns=[...document.querySelectorAll("#topTabs .tab")], panels=[...document.querySelectorAll(".tabpanel")];
-  function show(id){ btns.forEach(b=>{const on=b.dataset.tab===id; b.classList.toggle("on",on); b.setAttribute("aria-selected",on);}); panels.forEach(p=>p.hidden=(p.id!==id)); }
+  function show(id){ btns.forEach(b=>{const on=b.dataset.tab===id; b.classList.toggle("on",on); b.setAttribute("aria-selected",on); b.tabIndex=on?0:-1;}); panels.forEach(p=>p.hidden=(p.id!==id)); }
   btns.forEach(b=>b.addEventListener("click",()=>{show(b.dataset.tab); document.getElementById("topTabs").scrollIntoView({block:"start"});}));
   show("site-catl");
 }
